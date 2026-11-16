@@ -1,0 +1,268 @@
+.ar4n-intro {
+    --intro-ink: #211b18;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--intro-ink);
+    animation:
+        intro-bg-to-white 1.05s cubic-bezier(.76, 0, .24, 1) 3.8s forwards,
+        intro-overlay-exit 1.5s cubic-bezier(.65, 0, .35, 1) 6.3s forwards;
+}
+
+.intro-blueprint {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0;
+    color: rgba(255, 255, 255, .3);
+    animation:
+        blueprint-appear .25s ease .9s forwards,
+        blueprint-clear .3s ease 5.95s forwards;
+}
+
+.blueprint-grid {
+    position: absolute;
+    inset: -20%;
+    background-image:
+        linear-gradient(rgba(255,255,255,.24) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.24) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+    background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+    mask-image: linear-gradient(90deg, transparent 8%, #000 48%, #000 68%, transparent 92%);
+    transform: translateX(-14%);
+    animation: blueprint-grid-pass 2.8s cubic-bezier(.65,0,.35,1) 1s forwards;
+}
+
+.blueprint-diagonal {
+    position: absolute;
+    width: 150vw;
+    height: 1px;
+    left: -25vw;
+    top: 50%;
+    background: currentColor;
+    transform-origin: center;
+    opacity: 0;
+}
+.blueprint-diagonal-one {
+    --angle: -27deg;
+    transform: rotate(-27deg) scaleX(.2);
+    animation: blueprint-line-pass 1.7s ease 1.35s forwards;
+}
+.blueprint-diagonal-two {
+    --angle: 27deg;
+    transform: rotate(27deg) scaleX(.2);
+    animation: blueprint-line-pass 1.7s ease 1.65s forwards;
+}
+.blueprint-ring {
+    position: absolute;
+    width: min(72vw, 620px);
+    aspect-ratio: 1;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.65);
+    animation: blueprint-ring-in 1.8s ease 1.4s forwards;
+}
+.blueprint-crosshair {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(84vw, 760px);
+    height: min(84vw, 760px);
+    border: 1px dashed currentColor;
+    transform: translate(-50%, -50%) rotate(0deg);
+    opacity: 0;
+    animation: blueprint-cross-in 2.2s ease 1.6s forwards;
+}
+.blueprint-scan {
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    left: 0;
+    width: 1px;
+    background: rgba(255,255,255,.65);
+    box-shadow: 0 0 18px rgba(255,255,255,.35);
+    transform: translateX(-10vw);
+    animation: blueprint-scan 2.2s cubic-bezier(.65,0,.35,1) 1.35s forwards;
+}
+
+.intro-composition {
+    position: relative;
+    width: min(82vw, 700px);
+    aspect-ratio: 620 / 470;
+    display: grid;
+    place-items: center;
+    transform: perspective(1000px) scale(.82);
+    animation: composition-arrive .9s cubic-bezier(.2,.8,.2,1) .1s forwards,
+               composition-exit 1.5s cubic-bezier(.65,0,.25,1) 6.3s forwards;
+    transform-origin: center;
+}
+
+.intro-outline {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform-origin: center;
+    animation: frame-clear .3s ease 5.95s forwards;
+}
+.outline-path,
+.outline-corner,
+.outline-center {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.2;
+    vector-effect: non-scaling-stroke;
+}
+
+.outline-corner,
+.outline-center {
+    transition: stroke 0.35s ease;
+}
+
+.outline-corner,
+.outline-center {
+    animation:
+        corner-draw 0.7s ease 2.2s forwards,
+        frame-to-black 0.35s ease 4.65s forwards;
+}
+
+.outline-path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transform-box: view-box;
+    transform-origin: center;
+    transform: rotate(-90deg) scale(.72);
+    animation: frame-unfold .8s cubic-bezier(.2,.8,.2,1) .35s forwards,
+               frame-draw 1.65s cubic-bezier(.65,0,.35,1) 1.1s forwards,
+               frame-to-black .35s ease 4.65s forwards;
+}
+.outline-corner,
+.outline-center {
+    opacity: 0;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation:
+        corner-draw .7s ease 2.2s forwards,
+        frame-to-black .35s ease 4.65s forwards;
+}
+
+.intro-logo-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(62%, 430px);
+    aspect-ratio: 717 / 537;
+    margin-top: -2%;
+}
+.intro-logo {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.intro-logo-white {
+    opacity: 0;
+    filter: brightness(0) invert(1);
+    animation: logo-white-in .55s ease 1.85s forwards,
+               logo-white-out .35s ease 4.05s forwards;
+}
+.intro-logo-color {
+    opacity: 0;
+    filter: none;
+    animation: logo-color-in .65s cubic-bezier(.2,.8,.2,1) 4.15s forwards;
+}
+
+.intro-caption {
+    position: absolute;
+    bottom: 7.5%;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: rgba(255,255,255,.55);
+    font: 500 9px/1 Arial, sans-serif;
+    letter-spacing: .32em;
+    opacity: 0;
+    animation: caption-in .5s ease 3.35s forwards,
+               caption-out .25s ease 5.35s forwards;
+}
+.intro-caption i {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #c6a173;
+}
+
+.intro-counter {
+    position: absolute;
+    left: 34px;
+    right: 34px;
+    bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255,255,255,.42);
+    font: 500 9px/1 Arial, sans-serif;
+    letter-spacing: .2em;
+    opacity: 0;
+    animation: caption-in .5s ease .8s forwards,
+               caption-out .3s ease 5.2s forwards;
+}
+
+@keyframes intro-bg-to-white { to { background: #fff; } }
+@keyframes intro-overlay-exit { from { opacity: 1; } to { opacity: 0; } }
+@keyframes blueprint-appear { to { opacity: 1; } }
+@keyframes blueprint-grid-pass { 0% { transform: translateX(-14%); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateX(14%); opacity: 0; } }
+@keyframes blueprint-line-pass { 0% { opacity: 0; transform: rotate(var(--angle, -27deg)) scaleX(.2); } 35% { opacity: 1; } 100% { opacity: 0; transform: rotate(var(--angle, -27deg)) scaleX(1); } }
+@keyframes blueprint-ring-in { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.65); } 45% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%,-50%) scale(1.12); } }
+@keyframes blueprint-cross-in { 0% { opacity: 0; transform: translate(-50%,-50%) rotate(0) scale(.7); } 40% { opacity: .7; } 100% { opacity: 0; transform: translate(-50%,-50%) rotate(24deg) scale(1.1); } }
+@keyframes blueprint-scan { 0% { transform: translateX(-10vw); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateX(110vw); opacity: 0; } }
+@keyframes composition-arrive { to { transform: perspective(1000px) scale(1); } }
+@keyframes frame-unfold { to { transform: rotate(0) scale(1); } }
+@keyframes frame-draw { to { stroke-dashoffset: 0; } }
+@keyframes frame-to-black { 0% { stroke: #fff; } 100% { stroke: #111; } }
+@keyframes corner-draw { to { opacity: .55; stroke-dashoffset: 0; } }
+@keyframes logo-white-in { to { opacity: 1; } }
+@keyframes logo-white-out { to { opacity: 0; } }
+@keyframes logo-color-in { to { opacity: 1; } }
+@keyframes caption-in { to { opacity: 1; } }
+@keyframes caption-out { to { opacity: 0; } }
+@keyframes composition-exit { to { transform: perspective(1000px) scale(2.15); opacity: 0; } }
+
+@media (max-width: 600px) {
+    .intro-composition { width: 96vw; }
+    .intro-logo-wrap { width: 68%; }
+    .intro-caption { bottom: 5%; font-size: 7px; gap: 8px; }
+    .intro-counter { left: 18px; right: 18px; bottom: 16px; font-size: 7px; }
+    .blueprint-ring { width: 92vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ar4n-intro { animation: none; background: #fff; }
+    .intro-composition { animation: none; transform: none; }
+    .intro-logo-white, .intro-caption, .intro-counter,
+    .intro-blueprint { display: none; }
+    .intro-logo-color { opacity: 1; }
+    .outline-path { animation: none; transform: none; stroke: #111; stroke-dashoffset: 0; }
+}
+
+@keyframes blueprint-clear {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes frame-clear {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}

@@ -666,6 +666,7 @@ function getCmsMediaUrl(
 ): string | null {
     return getImageUrl(path);
 }
+
 function normalizeProductName(value: string): string {
     return value
         .toLowerCase()

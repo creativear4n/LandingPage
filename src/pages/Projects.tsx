@@ -18,6 +18,7 @@ import MainLayout from "../components/layout/MainLayout";
 import {
     getProducts,
     getProjects,
+    getImageUrl,
 } from "../services/api";
 
 import type {
@@ -158,29 +159,10 @@ function findProductByCategory(
     );
 }
 
-const CMS_MEDIA_BASE = "/cms-media";
-
 function getCmsMediaUrl(
     path: string | null | undefined
 ): string | null {
-    if (!path) {
-        return null;
-    }
-
-    if (/^(https?:)?\/\//i.test(path)) {
-        return path;
-    }
-
-    const cleanPath = path.replace(/^\/+/, "");
-
-    if (
-        cleanPath.startsWith("cms-media/") ||
-        cleanPath.startsWith("storage/")
-    ) {
-        return `/${cleanPath}`;
-    }
-
-    return `${CMS_MEDIA_BASE}/${cleanPath}`;
+    return getImageUrl(path);
 }
 
 function formatWorkArea(

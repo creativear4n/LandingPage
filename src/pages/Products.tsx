@@ -149,8 +149,6 @@ type PriceListResponseData = {
     building_price_lists: BuildingPriceProduct[];
 };
 
-const CMS_MEDIA_BASE = "/cms-media";
-
 type ProductProcessStep = {
     id: string;
     title: string;
@@ -666,22 +664,8 @@ const productScopeDescriptions: Record<
 function getCmsMediaUrl(
     path: string | null | undefined
 ): string | null {
-    if (!path) {
-        return null;
-    }
-    if (/^(https?:)?\/\//i.test(path)) {
-        return path;
-    }
-    const cleanPath = path.replace(/^\/+/, "");
-    if (
-        cleanPath.startsWith("cms-media/") ||
-        cleanPath.startsWith("storage/")
-    ) {
-        return `/${cleanPath}`;
-    }
-    return `${CMS_MEDIA_BASE}/${cleanPath}`;
+    return getImageUrl(path);
 }
-
 function normalizeProductName(value: string): string {
     return value
         .toLowerCase()

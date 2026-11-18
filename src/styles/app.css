@@ -5665,7 +5665,6 @@ button {
     gap: 20px;
     width: 100%;
 }
-
 .products-scope-card {
     grid-column: span 2;
     display: flex;
@@ -5675,17 +5674,17 @@ button {
     min-width: 0;
     min-height: 285px;
     padding: 27px 20px 22px;
-    border: 1.5px solid #5055c7;
-    border-radius: 5px;
-    background: #fff;
+    border: 1px solid rgba(241, 238, 232, .13);
+    border-radius: 13px;
+    background: linear-gradient(145deg, #2b2a26, #24231f);
     text-align: center;
-    transition: border-color .3s ease, transform .3s ease, box-shadow .3s ease;
+    transition: border-color .25s ease, background .25s ease, transform .25s ease;
 }
 
 .products-scope-card:hover {
-    transform: translateY(-4px);
-    border-color: #282078;
-    box-shadow: 0 12px 26px rgba(0, 0, 0, .13);
+    transform: translateY(-3px);
+    border-color: rgba(198, 161, 115, .62);
+    background: #302e28;
 }
 
 .products-scope-icon {
@@ -5696,7 +5695,7 @@ button {
     width: 85px;
     height: 105px;
     margin-bottom: 14px;
-    color: #26156b;
+    color: #f1eee8;
 }
 
 .products-scope-icon svg {
@@ -5707,7 +5706,7 @@ button {
 .products-scope-card h4 {
     width: 100%;
     margin: 0 0 7px;
-    color: #24165e;
+    color: #f1eee8;
     font-size: 17px;
     font-weight: 500;
     line-height: 1.45;
@@ -5715,7 +5714,7 @@ button {
 
 .products-scope-card p {
     margin: 0;
-    color: #252525;
+    color: rgba(241, 238, 232, .68);
     font-size: 14px;
     font-weight: 400;
     line-height: 1.65;

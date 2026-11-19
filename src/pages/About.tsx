@@ -5,6 +5,9 @@ import {
     useState
 } from "react";
 import {
+    createPortal
+} from "react-dom";
+import {
     ChevronDown
 } from "lucide-react";
 import MainLayout from "../components/layout/MainLayout";
@@ -337,72 +340,72 @@ function TeamCarousel({
                 )}
             </div>
 
-            {selectedMember && (
-                <div
-                    className="team-modal"
-                    onClick={() => setSelectedMember(null)}
-                >
+            {selectedMember &&
+                createPortal(
                     <div
-                        className="team-modal__dialog"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label={`Profil ${selectedMember.name}`}
-                        onClick={(event) => event.stopPropagation()}
+                        className="team-modal"
+                        onClick={() => setSelectedMember(null)}
                     >
-                        <button
-                            type="button"
-                            className="team-modal__close"
-                            onClick={() => setSelectedMember(null)}
-                            aria-label="Tutup profil"
+                        <div
+                            className="team-modal__dialog"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label={`Profil ${selectedMember.name}`}
+                            onClick={(event) => event.stopPropagation()}
                         >
-                            ×
-                        </button>
+                            <button
+                                type="button"
+                                className="team-modal__close"
+                                onClick={() => setSelectedMember(null)}
+                                aria-label="Tutup profil"
+                            >
+                                ×
+                            </button>
 
-                        <div className="team-modal__photo">
-                            {selectedMember.photo_url ? (
-                                <img
-                                    src={selectedMember.photo_url}
-                                    alt={selectedMember.name}
-                                />
-                            ) : (
-                                <span>
-                                    {selectedMember.name
-                                        .charAt(0)
-                                        .toUpperCase()}
+                            <div className="team-modal__photo">
+                                {selectedMember.photo_url ? (
+                                    <img
+                                        src={selectedMember.photo_url}
+                                        alt={selectedMember.name}
+                                    />
+                                ) : (
+                                    <span>
+                                        {selectedMember.name.charAt(0).toUpperCase()}
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="team-modal__content">
+                                <span className="team-modal__eyebrow">
+                                    AR4N GROUP · TEAM PROFILE
                                 </span>
-                            )}
+
+                                <h3>{selectedMember.name}</h3>
+
+                                {selectedMember.position && (
+                                    <p className="team-modal__position">
+                                        {selectedMember.position}
+                                    </p>
+                                )}
+
+                                {selectedMember.certifications && (
+                                    <div className="team-modal__detail">
+                                        <span>Certification</span>
+                                        <p>{selectedMember.certifications}</p>
+                                    </div>
+                                )}
+
+                                {selectedMember.description && (
+                                    <div className="team-modal__detail">
+                                        <span>About</span>
+                                        <p>{selectedMember.description}</p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-
-                        <div className="team-modal__content">
-                            <span className="team-modal__eyebrow">
-                                AR4N GROUP · TEAM PROFILE
-                            </span>
-
-                            <h3>{selectedMember.name}</h3>
-
-                            {selectedMember.position && (
-                                <p className="team-modal__position">
-                                    {selectedMember.position}
-                                </p>
-                            )}
-
-                            {selectedMember.certifications && (
-                                <div className="team-modal__detail">
-                                    <span>Certification</span>
-                                    <p>{selectedMember.certifications}</p>
-                                </div>
-                            )}
-
-                            {selectedMember.description && (
-                                <div className="team-modal__detail">
-                                    <span>About</span>
-                                    <p>{selectedMember.description}</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
+                    </div>,
+                    document.body
+                )}
         </section>
     );
 }

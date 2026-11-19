@@ -6077,33 +6077,39 @@ button {
     }
 }
 
-/* ABOUT PAGE ANIMATION */
+/* ABOUT PAGE - SMOOTH REVEAL */
 
 .about-hero-motion img {
-    animation: about-hero-zoom 1.2s ease both;
+    animation: about-hero-zoom 1.6s cubic-bezier(.22, 1, .36, 1) both;
 }
 
 .about-reveal {
-    animation: about-reveal 0.85s cubic-bezier(.2, .7, .2, 1) both;
+    animation: about-reveal 1.15s cubic-bezier(.22, 1, .36, 1) both;
+    will-change: opacity, transform;
 }
 
 .about-profile-motion {
-    animation-delay: .12s;
+    animation-delay: .15s;
 }
 
-.about-testimonial-motion {
+.about-team-motion {
     animation-delay: .3s;
 }
 
+.about-testimonial-motion {
+    animation-delay: .45s;
+}
+
 .about-philosophy-motion {
-    animation-delay: .4s;
+    animation-delay: .6s;
 }
 
 @keyframes about-hero-zoom {
     from {
-        opacity: .5;
-        transform: scale(1.08);
+        opacity: .75;
+        transform: scale(1.045);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -6113,16 +6119,14 @@ button {
 @keyframes about-reveal {
     from {
         opacity: 0;
-        transform: translateY(35px);
+        transform: translate3d(0, 18px, 0);
     }
+
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translate3d(0, 0, 0);
     }
 }
-
-
-/* OUR TEAM */
 
 .team-section {
     padding-top: 55px;
@@ -6459,9 +6463,13 @@ button {
     display: grid;
     place-items: center;
     padding: 24px;
-    background: rgba(0, 0, 0, .82);
-    backdrop-filter: blur(8px);
-    animation: team-modal-fade .25s ease both;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, .55),
+        rgba(0, 0, 0, .68)
+    );
+    backdrop-filter: blur(5px);
+    animation: team-modal-fade .45s ease-out both;
 }
 
 .team-modal__dialog {
@@ -6574,15 +6582,25 @@ button {
 }
 
 @keyframes team-modal-fade {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.team-modal__dialog {
+    animation: team-modal-enter .55s cubic-bezier(.22, 1, .36, 1) both;
 }
 
 @keyframes team-modal-enter {
     from {
         opacity: 0;
-        transform: translateY(18px) scale(.97);
+        transform: translateY(14px) scale(.985);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -6632,9 +6650,8 @@ button {
     animation: about-title-reveal 1s .2s ease both;
 }
 
-/* Profile image */
 .about-profile-motion .profile-block > img {
-    animation: about-image-reveal 1s .2s ease both;
+    animation: about-image-reveal 1.3s .25s cubic-bezier(.22, 1, .36, 1) both;
     transition:
         transform .65s ease,
         filter .65s ease,
@@ -6647,12 +6664,10 @@ button {
     box-shadow: 0 22px 45px rgba(0, 0, 0, .28);
 }
 
-/* Profile content */
 .about-profile-motion .profile-block > div {
-    animation: about-copy-reveal 1s .35s ease both;
+    animation: about-copy-reveal 1.3s .4s cubic-bezier(.22, 1, .36, 1) both;
 }
 
-/* Team dan testimonial reveal */
 .about-team-motion {
     animation-delay: .3s;
 }
@@ -6661,7 +6676,6 @@ button {
     animation-delay: .4s;
 }
 
-/* Philosophy section */
 .products-explanation-section.about-philosophy-section {
     background: #1c1c1a;
     color: #f1eee8;

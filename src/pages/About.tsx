@@ -250,7 +250,7 @@ function TeamCarousel({
         <section className="team-section page-width about-reveal about-team-motion">
             <div className="team-heading">
                 <h2>OUR TEAM</h2>
-                <p>The People Behind AR4N Group</p>
+                <p>01 The People Behind AR4N Group</p>
             </div>
 
             <div className="team-carousel">

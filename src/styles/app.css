@@ -6160,13 +6160,14 @@ button {
 .team-track {
     display: flex;
     align-items: stretch;
+    justify-content: flex-start;
     gap: 28px;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
-    padding: 100px 42px 32px;
+    padding: 120px 42px 32px;
 }
 
 .team-track::-webkit-scrollbar {
@@ -6180,16 +6181,34 @@ button {
 
 .team-card {
     appearance: none;
+    position: relative;
+    isolation: isolate;
     display: block;
+    flex: 0 0 calc((100% - 84px) / 4);
+    width: auto;
+    min-width: 0;
+    height: 420px;
+    margin: 0;
     padding: 0;
     text-align: left;
-    color: inherit;
     font: inherit;
+    color: inherit;
     cursor: pointer;
+    scroll-snap-align: start;
+    background: #22211f;
+    border: 1px solid rgba(198, 161, 115, .55);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .22);
+    overflow: visible;
+    transition:
+        transform .4s ease,
+        border-color .4s ease,
+        box-shadow .4s ease;
 }
 
 .team-track--single .team-card {
-    flex-basis: min(340px, calc(100vw - 100px));
+    flex: 0 0 340px;
+    width: 340px;
+    max-width: calc(100vw - 96px);
     scroll-snap-align: center;
 }
 
@@ -6224,9 +6243,9 @@ button {
     position: absolute;
     z-index: 2;
     left: 50%;
-    bottom: 88px;
+    bottom: 72px;
     width: 116%;
-    height: calc(100% + 95px);
+    height: 100%;
     object-fit: contain;
     object-position: center bottom;
     transform: translateX(-50%);
@@ -6359,19 +6378,20 @@ button {
         padding-top: 35px;
         padding-bottom: 65px;
     }
-
+    
     .team-track {
         gap: 24px;
-        padding: 85px 34px 28px;
+        padding: 110px 34px 28px;
     }
 
     .team-card {
-        flex-basis: calc((100% - 24px) / 2);
+        flex: 0 0 calc((100% - 24px) / 2);
         height: 380px;
     }
 
     .team-track--single .team-card {
-        flex-basis: min(340px, calc(100vw - 90px));
+        flex: 0 0 min(340px, calc(100vw - 90px));
+        width: min(340px, calc(100vw - 90px));
     }
 
     .team-nav {

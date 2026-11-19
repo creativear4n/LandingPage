@@ -133,7 +133,7 @@ function PhilosophyAccordion({
                         aria-controls={panelId}
                     >
                         <span className="products-explanation-number">
-                            01
+                            03
                         </span>
                         
                         <span className="products-explanation-title-wrap">

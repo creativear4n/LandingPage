@@ -111,7 +111,7 @@ function PhilosophyAccordion({
     const panelId = `about-philosophy-${useId().replace(/:/g, "")}`;
 
     return (
-        <section className="products-explanation-section page-width about-philosophy-section about-reveal about-philosophy-motion">
+        <section className="products-explanation-section page-width about-philosophy-section about-scroll-reveal about-philosophy-motion">
             <div className="products-explanation-heading">
                 <p>OUR PHILOSOPHY</p>
 
@@ -125,7 +125,7 @@ function PhilosophyAccordion({
 
             <div className="products-explanation-groups">
                 <div className={`products-explanation-group ${
-                    isOpen ? "is-Open" : ""
+                    isOpen ? "is-open" : ""
                 }`}
                 >
                     <button
@@ -160,7 +160,7 @@ function PhilosophyAccordion({
                     {isOpen && (
                         <div
                             id={panelId}
-                            className="products-explanation-panel about-philsophy-panel"
+                            className="products-explanation-panel about-philosophy-panel"
                             >
                                 <div className="about-philosophy-copy">
                                     <p>{content}</p>
@@ -250,7 +250,7 @@ function TeamCarousel({
     }
 
     return (
-        <section className="team-section page-width about-reveal about-team-motion">
+        <section className="team-section page-width about-scroll-reveal about-team-motion">
             <div className="team-heading">
                 <h2>OUR TEAM</h2>
                 <p>01 The People Behind AR4N Group</p>
@@ -477,6 +477,49 @@ export default function About() {
         };
     }, []);
 
+    useEffect(() => {
+        if (loading) return;
+
+        const elements = document.querySelectorAll<HTMLElement>(
+            ".about-scroll-reveal"
+        );
+
+        if (!elements.length) return;
+
+        if (!("IntersectionObserver" in window)) {
+            elements.forEach((element) =>
+                element.classList.add("is-visible")
+            );
+            return;
+        }
+
+        document.documentElement.classList.add("about-reveal-ready");
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            {
+                threshold: 0.12,
+                rootMargin: "0px 0px -40px 0px",
+            }
+        );
+
+        elements.forEach((element) => observer.observe(element));
+
+        return () => {
+            observer.disconnect();
+            document.documentElement.classList.remove(
+                "about-reveal-ready"
+            );
+        };
+    }, [loading]);
+
     if (loading) {
         return (
             <MainLayout page="about" headerOverlay>
@@ -517,7 +560,7 @@ export default function About() {
                 image={aboutUs?.hero_image_url ?? null}
             />
 
-            <section className="about-page page-width about-reveal about-profile-motion">
+            <section className="about-page page-width about-scroll-reveal about-profile-motion">
                 <div className="profile-block">
                     <ProfileImage
                         image={
@@ -545,7 +588,7 @@ export default function About() {
                 members={aboutUs?.team_members ?? []}
             />
 
-            <div className="about-reveal about-testimonial-motion">
+            <div className="about-scroll-reveal about-testimonial-motion">
                 <TestimonialSection
                     testimonials={testimonials}
                 />

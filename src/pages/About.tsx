@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MainLayout from "../components/layout/MainLayout";
 import TestimonialSection from "../components/sections/TestimonialSection";
 import {
@@ -10,6 +10,7 @@ import type {
     ApiAboutUs,
     ApiTestimonial,
     AboutUs,
+    AboutTeamMember,
 } from "../types";
 
 const fallbackImages = {
@@ -29,12 +30,19 @@ function normalizeAboutUs(
         profile_title: data.profile_title,
         description: data.description,
         philosophy: data.philosophy,
-        award: data.award,
-        exhibition: data.exhibition,
-        team: data.team,
-        people: data.people,
         hero_image_url: getImageUrl(data.hero_image),
         profile_image_url: getImageUrl(data.profile_image),
+        team_members: (data.team_members ?? [])
+            .filter((member) => member.is_active)
+            .sort(
+                (a, b) => a.sort_order - b.sort_order
+            )
+            .map((member) => ({
+                ...member,
+                photo_url: getImageUrl(
+                    member.photo_url || member.photo_path
+                ),
+            })),
     };
 }
 
@@ -52,7 +60,7 @@ function InnerHero({
     }, [image]);
 
     return (
-        <section className="inner-hero">
+        <section className="inner-hero about-hero-motion">
             <img
                 src={imageSrc}
                 alt="AR4N Group About Us"
@@ -83,25 +91,6 @@ function SectionTitle({
     );
 }
 
-function AboutText({
-    title,
-    text,
-}: {
-    title: string;
-    text: string | null;
-}) {
-    if (!text?.trim()) {
-        return null;
-    }
-
-    return (
-        <article className="about-text">
-            <SectionTitle title={title} />
-            <p>{text}</p>
-        </article>
-    );
-}
-
 function ProfileImage({
     image,
 }: {
@@ -125,6 +114,130 @@ function ProfileImage({
                 }
             }}
         />
+    );
+}
+
+function TeamCarousel({
+    members,
+}: {
+    members: AboutTeamMember[];
+}) {
+    const trackRef = useRef<HTMLDivElement>(null);
+
+    const scrollCards = (direction: number) => {
+        const track = trackRef.current;
+
+        if (!track) return;
+
+        const card = track.querySelector<HTMLElement>(
+            ".team-card"
+        );
+
+        const gap = 24;
+        const distance = (card?.offsetWidth ?? 280) + gap;
+
+        track.scrollBy({
+            left: direction * distance,
+            behavior: "smooth",
+        });
+    };
+
+    if (!members.length) {
+        return null;
+    }
+
+    return (
+        <section className="team-section page-width about-reveal about-team-motion">
+            <div className="team-heading">
+                <h2>OUR TEAM</h2>
+                <p>The People Behind AR4N Group</p>
+            </div>
+
+            <div className="team-carousel">
+                <button
+                    type="button"
+                    className="team-nav team-nav--prev"
+                    onClick={() => scrollCards(-1)}
+                    aria-label="Anggota sebelumnya"
+                >
+                    &#8592;
+                </button>
+
+                <div
+                    ref={trackRef}
+                    className="team-track"
+                >
+                    {members.map((member, index) => (
+                        <article
+                            className="team-card"
+                            key={member.id}
+                            style={{
+                                animationDelay: `${index * 90}ms`,
+                            }}
+                        >
+                            <div className="team-card__photo-stage">
+                                <div
+                                    className="team-card__initial"
+                                    aria-hidden="true"
+                                >
+                                    {member.name
+                                        .charAt(0)
+                                        .toUpperCase()}
+                                </div>
+
+                                {member.photo_url && (
+                                    <img
+                                        src={member.photo_url}
+                                        alt={member.name}
+                                        className="team-card__photo"
+                                        loading="lazy"
+                                        onError={(event) => {
+                                            event.currentTarget.style.display =
+                                                "none";
+                                        }}
+                                    />
+                                )}
+
+                                <div className="team-card__vertical">
+                                    AR4N GROUP
+                                </div>
+
+                                <div className="team-card__info">
+                                    <h3>{member.name}</h3>
+
+                                    {member.position && (
+                                        <p className="team-card__position">
+                                            {member.position}
+                                        </p>
+                                    )}
+
+                                    {member.certifications && (
+                                        <p className="team-card__cert">
+                                            {member.certifications}
+                                        </p>
+                                    )}
+
+                                    {member.description && (
+                                        <p className="team-card__description">
+                                            {member.description}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </article>
+                    ))}
+                </div>
+
+                <button
+                    type="button"
+                    className="team-nav team-nav--next"
+                    onClick={() => scrollCards(1)}
+                    aria-label="Anggota berikutnya"
+                >
+                    &#8594;
+                </button>
+            </div>
+        </section>
     );
 }
 
@@ -235,7 +348,7 @@ export default function About() {
                 image={aboutUs?.hero_image_url ?? null}
             />
 
-            <section className="about-page page-width">
+            <section className="about-page page-width about-reveal about-profile-motion">
                 <div className="profile-block">
                     <ProfileImage
                         image={
@@ -259,38 +372,26 @@ export default function About() {
                 </div>
             </section>
 
-            <TestimonialSection
-                testimonials={testimonials}
+            <TeamCarousel
+                members={aboutUs?.team_members ?? []}
             />
 
-            <section className="about-page about-details page-width">
-                <div className="about-grid">
-                    <AboutText
-                        title="Philosophy"
-                        text={aboutUs?.philosophy ?? null}
-                    />
+            <div className="about-reveal about-testimonial-motion">
+                <TestimonialSection
+                    testimonials={testimonials}
+                />
+            </div>
 
-                    <AboutText
-                        title="Award"
-                        text={aboutUs?.award ?? null}
-                    />
-
-                    <AboutText
-                        title="People"
-                        text={aboutUs?.people ?? null}
-                    />
-
-                    <AboutText
-                        title="Exhibition"
-                        text={aboutUs?.exhibition ?? null}
-                    />
-
-                    <AboutText
-                        title="Team"
-                        text={aboutUs?.team ?? null}
-                    />
-                </div>
-            </section>
+            {aboutUs?.philosophy?.trim() && (
+                <section className="about-page about-details page-width about-reveal about-philosophy-motion">
+                    <div className="about-grid">
+                        <article className="about-text">
+                            <SectionTitle title="Philosophy" />
+                            <p>{aboutUs.philosophy}</p>
+                        </article>
+                    </div>
+                </section>
+            )}
         </MainLayout>
     );
 }

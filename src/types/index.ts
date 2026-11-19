@@ -30,18 +30,14 @@ export interface ApiAboutUs {
     profile_title: string;
     description: string;
     philosophy: string;
-    award: string;
-    exhibition: string;
-    team: string;
-    people: string;
     hero_image: string | null;
     hero_image_url?: string | null;
     profile_image: string | null;
     profile_image_url?: string | null;
+    team_members?: ApiAboutTeamMember[];
     created_at?: string;
     updated_at?: string;
 }
-
 export interface ApiWork {
     id: number;
     hero_image: string | null;
@@ -174,12 +170,9 @@ export interface AboutUs {
     profile_title: string;
     description: string;
     philosophy: string;
-    award: string;
-    exhibition: string;
-    team: string;
-    people: string;
     hero_image_url: string | null;
     profile_image_url: string | null;
+    team_members: AboutTeamMember[];
 }
 
 export interface Work {
@@ -259,4 +252,28 @@ export interface ApiPbgProject {
         id: number;
         name_product: string;
     } | null;
+}
+
+export interface ApiAboutTeamMember {
+    id: number;
+    name: string;
+    position: string | null;
+    certifications: string | null;
+    description: string | null;
+    photo_path: string | null;
+    photo_url?: string | null;
+    sort_order: number;
+    is_active: boolean;
+}
+
+export interface AboutTeamMember {
+    id: number;
+    name: string;
+    position: string | null;
+    certifications: string | null;
+    description: string | null;
+    photo_path: string | null;
+    photo_url: string | null;
+    sort_order: number;
+    is_active: boolean;
 }

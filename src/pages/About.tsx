@@ -135,9 +135,6 @@ function PhilosophyAccordion({
                         aria-expanded={isOpen}
                         aria-controls={panelId}
                     >
-                        <span className="products-explanation-number">
-                            03
-                        </span>
                         
                         <span className="products-explanation-title-wrap">
                             <strong className="products-explanation-title">
@@ -253,7 +250,7 @@ function TeamCarousel({
         <section className="team-section page-width about-scroll-reveal about-team-motion">
             <div className="team-heading">
                 <h2>OUR TEAM</h2>
-                <p>01 The People Behind AR4N Group</p>
+                <p>The People Behind AR4N Group</p>
             </div>
 
             <div className="team-carousel">

@@ -66,7 +66,7 @@ export default function TestimonialSection({
                 <div className="page-width">
                     <div className="testimonial-heading">
                         <p className="section-kicker">
-                            02 / Client stories
+                            Client stories
                         </p>
 
                         <h2>What Our Clients Say</h2>
@@ -91,7 +91,7 @@ export default function TestimonialSection({
             <div className="page-width">
                 <div className="testimonial-heading">
                     <p className="section-kicker">
-                        02 / Client stories
+                        Client stories
                     </p>
 
                     <h2>What Our Clients Say</h2>

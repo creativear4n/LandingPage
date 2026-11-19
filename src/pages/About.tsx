@@ -200,13 +200,14 @@ function ProfileImage({
     );
 }
 
-
 function TeamCarousel({
     members,
 }: {
     members: AboutTeamMember[];
 }) {
     const trackRef = useRef<HTMLDivElement>(null);
+    const [selectedMember, setSelectedMember] =
+        useState<AboutTeamMember | null>(null);
 
     const scrollCards = (direction: number) => {
         const track = trackRef.current;
@@ -224,6 +225,22 @@ function TeamCarousel({
             behavior: "smooth",
         });
     };
+
+    useEffect(() => {
+        if (!selectedMember) return;
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setSelectedMember(null);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [selectedMember]);
 
     if (!members.length) {
         return null;
@@ -244,7 +261,7 @@ function TeamCarousel({
                         onClick={() => scrollCards(-1)}
                         aria-label="Anggota sebelumnya"
                     >
-                        <span aria-hidden="true">&#8592;</span>
+                        <span aria-hidden="true">‹</span>
                     </button>
                 )}
 
@@ -257,12 +274,15 @@ function TeamCarousel({
                     }`}
                 >
                     {members.map((member, index) => (
-                        <article
+                        <button
+                            type="button"
                             className="team-card"
                             key={member.id}
                             style={{
                                 animationDelay: `${index * 90}ms`,
                             }}
+                            onClick={() => setSelectedMember(member)}
+                            aria-label={`Lihat profil ${member.name}`}
                         >
                             <div className="team-card__photo-stage">
                                 {!member.photo_url && (
@@ -270,9 +290,7 @@ function TeamCarousel({
                                         className="team-card__initial"
                                         aria-hidden="true"
                                     >
-                                        {member.name
-                                            .charAt(0)
-                                            .toUpperCase()}
+                                        {member.name.charAt(0).toUpperCase()}
                                     </div>
                                 )}
 
@@ -301,21 +319,9 @@ function TeamCarousel({
                                             {member.position}
                                         </p>
                                     )}
-
-                                    {member.certifications && (
-                                        <p className="team-card__cert">
-                                            {member.certifications}
-                                        </p>
-                                    )}
-
-                                    {member.description && (
-                                        <p className="team-card__description">
-                                            {member.description}
-                                        </p>
-                                    )}
                                 </div>
                             </div>
-                        </article>
+                        </button>
                     ))}
                 </div>
 
@@ -326,10 +332,77 @@ function TeamCarousel({
                         onClick={() => scrollCards(1)}
                         aria-label="Anggota berikutnya"
                     >
-                        <span aria-hidden="true">&#8594;</span>
+                        <span aria-hidden="true">›</span>
                     </button>
                 )}
             </div>
+
+            {selectedMember && (
+                <div
+                    className="team-modal"
+                    onClick={() => setSelectedMember(null)}
+                >
+                    <div
+                        className="team-modal__dialog"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={`Profil ${selectedMember.name}`}
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <button
+                            type="button"
+                            className="team-modal__close"
+                            onClick={() => setSelectedMember(null)}
+                            aria-label="Tutup profil"
+                        >
+                            ×
+                        </button>
+
+                        <div className="team-modal__photo">
+                            {selectedMember.photo_url ? (
+                                <img
+                                    src={selectedMember.photo_url}
+                                    alt={selectedMember.name}
+                                />
+                            ) : (
+                                <span>
+                                    {selectedMember.name
+                                        .charAt(0)
+                                        .toUpperCase()}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="team-modal__content">
+                            <span className="team-modal__eyebrow">
+                                AR4N GROUP · TEAM PROFILE
+                            </span>
+
+                            <h3>{selectedMember.name}</h3>
+
+                            {selectedMember.position && (
+                                <p className="team-modal__position">
+                                    {selectedMember.position}
+                                </p>
+                            )}
+
+                            {selectedMember.certifications && (
+                                <div className="team-modal__detail">
+                                    <span>Certification</span>
+                                    <p>{selectedMember.certifications}</p>
+                                </div>
+                            )}
+
+                            {selectedMember.description && (
+                                <div className="team-modal__detail">
+                                    <span>About</span>
+                                    <p>{selectedMember.description}</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

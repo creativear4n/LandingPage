@@ -1,4 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import {
+    useEffect,
+    useId,
+    useRef,
+    useState
+} from "react";
+import {
+    ChevronDown
+} from "lucide-react";
 import MainLayout from "../components/layout/MainLayout";
 import TestimonialSection from "../components/sections/TestimonialSection";
 import {
@@ -88,6 +96,81 @@ function SectionTitle({
             {title}
             <span />
         </h2>
+    );
+}
+
+function PhilosophyAccordion({
+    content,
+}: {
+    content: string;
+}) {
+    const [isOpen, setIsOpen] =useState(false);
+    const panelId = `about-philosophy-${useId().replace(/:/g, "")}`;
+
+    return (
+        <section className="products-explanation-section page-width about-philosophy-section about-reveal about-philosophy-motion">
+            <div className="products-explanation-heading">
+                <p>OUR PHILOSOPHY</p>
+
+                <h2>Principles That Guide Us</h2>
+
+                <span>
+                    Nilai dan prinsip yang menjadi landasan
+                    setiap langkah AR4N Group.
+                </span>
+            </div>
+
+            <div className="products-explanation-groups">
+                <div className={`products-explanation-group ${
+                    isOpen ? "is-Open" : ""
+                }`}
+                >
+                    <button
+                        type="button"
+                        className="products-explanation-toggle"
+                        onClick={() => setIsOpen((previous) => !previous)}
+                        aria-expanded={isOpen}
+                        aria-controls={panelId}
+                    >
+                        <span className="products-explanation-number">
+                            01
+                        </span>
+                        
+                        <span className="products-explanation-title-wrap">
+                            <strong className="products-explanation-title">
+                                Philosophy AR4N Group
+                            </strong>
+
+                            <span className="products-explanation-subtitle">
+                                Nilai, Prinsip dan Cara Pandang
+                                dalam setiap Pekerjaan.
+                            </span>
+                        </span>
+
+                        <span className="products-explanation-toggle-icon">
+                            <ChevronDown
+                                size={22}
+                                strokeWidth={1.7}
+                            />
+                        </span>
+                    </button>
+                    {isOpen && (
+                        <div
+                            id={panelId}
+                            className="products-explanation-panel about-philsophy-panel"
+                            >
+                                <div className="about-philosophy-copy">
+                                    <p>{content}</p>
+                                </div>
+                            </div>
+                    )
+
+                    }
+
+                </div>
+                
+            </div>
+        </section>
     );
 }
 
@@ -383,14 +466,10 @@ export default function About() {
             </div>
 
             {aboutUs?.philosophy?.trim() && (
-                <section className="about-page about-details page-width about-reveal about-philosophy-motion">
-                    <div className="about-grid">
-                        <article className="about-text">
-                            <SectionTitle title="Philosophy" />
-                            <p>{aboutUs.philosophy}</p>
-                        </article>
-                    </div>
-                </section>
+                <PhilosophyAccordion
+                    content={aboutUs.philosophy}
+
+                />
             )}
         </MainLayout>
     );

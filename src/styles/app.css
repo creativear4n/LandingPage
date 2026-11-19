@@ -6382,3 +6382,177 @@ button {
         transition: none;
     }
 }
+
+/* =================================
+   ABOUT PAGE - MODERN EXPERIENCE
+================================= */
+
+/* Hero title */
+.about-hero-motion h1 {
+    animation: about-title-reveal 1s .2s ease both;
+}
+
+/* Profile image */
+.about-profile-motion .profile-block > img {
+    animation: about-image-reveal 1s .2s ease both;
+    transition:
+        transform .65s ease,
+        filter .65s ease,
+        box-shadow .65s ease;
+}
+
+.about-profile-motion .profile-block > img:hover {
+    transform: translateY(-6px) scale(1.015);
+    filter: saturate(.95);
+    box-shadow: 0 22px 45px rgba(0, 0, 0, .28);
+}
+
+/* Profile content */
+.about-profile-motion .profile-block > div {
+    animation: about-copy-reveal 1s .35s ease both;
+}
+
+/* Team dan testimonial reveal */
+.about-team-motion {
+    animation-delay: .3s;
+}
+
+.about-testimonial-motion {
+    animation-delay: .4s;
+}
+
+/* Philosophy section */
+.products-explanation-section.about-philosophy-section {
+    background: #1c1c1a;
+    color: #f1eee8;
+    border-top: 1px solid rgba(255, 255, 255, .07);
+    border-bottom: 1px solid rgba(255, 255, 255, .07);
+    padding: 90px 0;
+    margin-top: 0;
+}
+
+.about-philosophy-section .products-explanation-heading {
+    margin-bottom: 45px;
+}
+
+.about-philosophy-section .products-explanation-heading > p {
+    color: #c6a173;
+}
+
+.about-philosophy-section .products-explanation-heading h2 {
+    color: #f1eee8;
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -.045em;
+}
+
+.about-philosophy-section .products-explanation-heading > span {
+    color: rgba(241, 238, 232, .65);
+}
+
+.about-philosophy-section .products-explanation-group {
+    background: #1c1c1a;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .16);
+}
+
+.about-philosophy-section .products-explanation-group.is-open {
+    border-color: rgba(198, 161, 115, .65);
+}
+
+.about-philosophy-section .products-explanation-toggle {
+    min-height: 88px;
+}
+
+.about-philosophy-section .products-explanation-panel {
+    background: #20201d;
+}
+
+.about-philosophy-copy {
+    max-width: 920px;
+    margin: 0 auto;
+    animation: about-philosophy-reveal .6s ease both;
+}
+
+.about-philosophy-copy p {
+    margin: 0;
+    color: rgba(241, 238, 232, .75);
+    font-size: 14px;
+    line-height: 1.95;
+    white-space: pre-line;
+}
+
+/* Keyframes */
+@keyframes about-title-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+        letter-spacing: .08em;
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        letter-spacing: -.06em;
+    }
+}
+
+@keyframes about-image-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(28px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes about-copy-reveal {
+    from {
+        opacity: 0;
+        transform: translateX(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes about-philosophy-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .products-explanation-section.about-philosophy-section {
+        padding: 65px 0;
+    }
+
+    .about-philosophy-copy p {
+        font-size: 13px;
+        line-height: 1.8;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .about-hero-motion h1,
+    .about-profile-motion .profile-block > img,
+    .about-profile-motion .profile-block > div,
+    .about-philosophy-copy {
+        animation: none !important;
+    }
+
+    .about-profile-motion .profile-block > img {
+        transition: none;
+    }
+}

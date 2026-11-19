@@ -200,6 +200,7 @@ function ProfileImage({
     );
 }
 
+
 function TeamCarousel({
     members,
 }: {
@@ -216,8 +217,7 @@ function TeamCarousel({
             ".team-card"
         );
 
-        const gap = 24;
-        const distance = (card?.offsetWidth ?? 280) + gap;
+        const distance = (card?.offsetWidth ?? 280) + 28;
 
         track.scrollBy({
             left: direction * distance,
@@ -237,18 +237,24 @@ function TeamCarousel({
             </div>
 
             <div className="team-carousel">
-                <button
-                    type="button"
-                    className="team-nav team-nav--prev"
-                    onClick={() => scrollCards(-1)}
-                    aria-label="Anggota sebelumnya"
-                >
-                    &#8592;
-                </button>
+                {members.length > 1 && (
+                    <button
+                        type="button"
+                        className="team-nav team-nav--prev"
+                        onClick={() => scrollCards(-1)}
+                        aria-label="Anggota sebelumnya"
+                    >
+                        <span aria-hidden="true">&#8592;</span>
+                    </button>
+                )}
 
                 <div
                     ref={trackRef}
-                    className="team-track"
+                    className={`team-track ${
+                        members.length === 1
+                            ? "team-track--single"
+                            : ""
+                    }`}
                 >
                     {members.map((member, index) => (
                         <article
@@ -259,14 +265,16 @@ function TeamCarousel({
                             }}
                         >
                             <div className="team-card__photo-stage">
-                                <div
-                                    className="team-card__initial"
-                                    aria-hidden="true"
-                                >
-                                    {member.name
-                                        .charAt(0)
-                                        .toUpperCase()}
-                                </div>
+                                {!member.photo_url && (
+                                    <div
+                                        className="team-card__initial"
+                                        aria-hidden="true"
+                                    >
+                                        {member.name
+                                            .charAt(0)
+                                            .toUpperCase()}
+                                    </div>
+                                )}
 
                                 {member.photo_url && (
                                     <img
@@ -311,14 +319,16 @@ function TeamCarousel({
                     ))}
                 </div>
 
-                <button
-                    type="button"
-                    className="team-nav team-nav--next"
-                    onClick={() => scrollCards(1)}
-                    aria-label="Anggota berikutnya"
-                >
-                    &#8594;
-                </button>
+                {members.length > 1 && (
+                    <button
+                        type="button"
+                        className="team-nav team-nav--next"
+                        onClick={() => scrollCards(1)}
+                        aria-label="Anggota berikutnya"
+                    >
+                        <span aria-hidden="true">&#8594;</span>
+                    </button>
+                )}
             </div>
         </section>
     );

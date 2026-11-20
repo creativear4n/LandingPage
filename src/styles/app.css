@@ -1186,9 +1186,9 @@ button {
 .profile-block > img {
     display: block;
     width: 100%;
-    height: 365px;
-    max-height: 420px;
-    object-fit: cover;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
     object-position: center;
     border-radius: 3px;
     background: #222220;
@@ -1307,8 +1307,9 @@ button {
 
     .profile-block > img {
         width: 100%;
-        height: 300px;
-        object-fit: cover;
+        height: auto;
+        max-height: none;
+        object-fit: contain;
     }
 
     .about-grid {
@@ -6086,7 +6087,8 @@ button {
 
 .about-scroll-reveal {
     opacity: 1;
-    transition: opacity 1.2s ease-in-out;
+    transition: opacity 1.8s cubic-bezier(.22, 1, .36, 1);
+    will-change: opacity;
 }
 
 html.about-reveal-ready
@@ -6101,13 +6103,21 @@ html.about-reveal-ready
 
 .about-hero-motion img,
 .about-hero-motion h1 {
-    animation: about-page-fade 1.4s ease-out both;
+    animation: about-page-fade 1.8s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.about-profile-motion .profile-block > img,
+.about-profile-motion .profile-block > div,
+.about-philosophy-copy {
+    animation: none !important;
+    transform: none !important;
 }
 
 @keyframes about-page-fade {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -6269,18 +6279,20 @@ html.about-reveal-ready
 }
 
 .team-card__vertical {
-    position: absolute;
-    z-index: 4;
-    top: -34px;
-    left: 0;
-    width: 100%;
-    color: #c6a173;
+     position: absolute;
+    z-index: 1;
+    top: 20px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    color: rgba(198, 161, 115, .48);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: .22em;
     text-align: center;
     writing-mode: horizontal-tb;
     transform: none;
+    pointer-events: none;
 }
 
 .team-card__info {

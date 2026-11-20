@@ -176,8 +176,10 @@ function PhilosophyAccordion({
 
 function ProfileImage({
     image,
+    onLoad,
 }: {
     image: string | null;
+    onLoad: () => void;
 }) {
     const [imageSrc, setImageSrc] = useState(
         image || fallbackImages.profile
@@ -191,6 +193,9 @@ function ProfileImage({
         <img
             src={imageSrc}
             alt="AR4N Group Profile"
+            decoding="async"
+            fetchPriority="high"
+            onLoad={onLoad}
             onError={() => {
                 if (imageSrc !== fallbackImages.profile) {
                     setImageSrc(fallbackImages.profile);
@@ -420,6 +425,9 @@ export default function About() {
 
     const [error, setError] = useState<string | null>(null);
 
+    const [profileImageLoaded, setProfileImageLoaded] =
+    useState(false);
+
     useEffect(() => {
         document.title = "About Us | AR4N Group";
 
@@ -556,21 +564,23 @@ export default function About() {
             <InnerHero
                 image={aboutUs?.hero_image_url ?? null}
             />
-
-            <section className="about-page page-width about-scroll-reveal about-profile-motion">
-                <div className="profile-block">
+                        
+            <section className="about-page page-width about-profile-motion">
+                <div
+                    className={`profile-block ${
+                        profileImageLoaded ? "is-ready" : ""
+                    }`}
+                >
                     <ProfileImage
-                        image={
-                            aboutUs?.profile_image_url ?? null
-                        }
+                        image={aboutUs?.profile_image_url ?? null}
+                        onLoad={() => setProfileImageLoaded(true)}
                     />
 
                     <div>
                         <SectionTitle title="Profile" />
 
                         <h3>
-                            {aboutUs?.profile_title ||
-                                "AR4N GROUP"}
+                            {aboutUs?.profile_title || "AR4N GROUP"}
                         </h3>
 
                         <p>

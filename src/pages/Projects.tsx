@@ -417,6 +417,14 @@ export default function Projects() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        const title = categoryConfig?.title
+            ? `${categoryConfig.title} Projects`
+            : "Projects";
+
+        document.title = `${title} | AR4N Group`;
+    }, [categoryConfig]);
+
+    useEffect(() => {
         let active = true;
 
         async function loadProjects() {

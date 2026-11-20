@@ -1585,6 +1585,15 @@ export default function Products() {
     const [error, setError] = useState<string | null>(null);
     const pointerStartX = useRef<number | null>(null);
     useEffect(() => {
+        const titles: Record<ProductSlug, string> = {
+            design: "Design",
+            buildings: "Buildings",
+            "pbg-slf": "PBG & SLF",
+        };
+
+        document.title = `${titles[productSlug] ?? "Products"} | AR4N Group`;
+    }, [productSlug]);
+    useEffect(() => {
         function updateCarouselStep() {
             if (window.innerWidth <= 640) {
                 setCarouselStep(88);

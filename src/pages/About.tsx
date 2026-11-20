@@ -2,13 +2,16 @@ import {
     useEffect,
     useId,
     useRef,
+    type PointerEvent as ReactPointerEvent,
     useState
 } from "react";
 import {
     createPortal
 } from "react-dom";
 import {
-    ChevronDown
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight
 } from "lucide-react";
 import MainLayout from "../components/layout/MainLayout";
 import TestimonialSection from "../components/sections/TestimonialSection";
@@ -210,25 +213,86 @@ function TeamCarousel({
 }: {
     members: AboutTeamMember[];
 }) {
-    const trackRef = useRef<HTMLDivElement>(null);
     const [selectedMember, setSelectedMember] =
-        useState<AboutTeamMember | null>(null);
+    useState<AboutTeamMember | null>(null);
 
-    const scrollCards = (direction: number) => {
-        const track = trackRef.current;
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [carouselStep, setCarouselStep] = useState(190);
 
-        if (!track) return;
+    const pointerStartX = useRef<number | null>(null);
+    const suppressCardClick = useRef(false);
 
-        const card = track.querySelector<HTMLElement>(
-            ".team-card"
+    useEffect(() => {
+        function updateCarouselStep() {
+            if (window.innerWidth <= 640) {
+                setCarouselStep(120);
+            } else if (window.innerWidth <= 900) {
+                setCarouselStep(150);
+            } else {
+                setCarouselStep(190);
+            }
+        }
+
+        updateCarouselStep();
+        window.addEventListener("resize", updateCarouselStep);
+
+        return () => {
+            window.removeEventListener("resize", updateCarouselStep);
+        };
+    }, []);
+
+    useEffect(() => {
+        setActiveIndex((current) =>
+            Math.min(current, Math.max(0, members.length - 1))
         );
+    }, [members.length]);
 
-        const distance = (card?.offsetWidth ?? 280) + 28;
+    const moveCarousel = (direction: number) => {
+        setActiveIndex((current) =>
+            Math.max(
+                0,
+                Math.min(current + direction, members.length - 1)
+            )
+        );
+    };
 
-        track.scrollBy({
-            left: direction * distance,
-            behavior: "smooth",
-        });
+    const handlePointerDown = (
+        event: ReactPointerEvent<HTMLDivElement>
+    ) => {
+        if (
+            event.pointerType === "mouse" &&
+            event.button !== 0
+        ) {
+            return;
+        }
+
+        pointerStartX.current = event.clientX;
+        suppressCardClick.current = false;
+
+    };
+
+    const handlePointerUp = (
+        event: ReactPointerEvent<HTMLDivElement>
+    ) => {
+        if (pointerStartX.current === null) return;
+
+        const distance = pointerStartX.current - event.clientX;
+
+        if (Math.abs(distance) > 45) {
+            suppressCardClick.current = true;
+            moveCarousel(distance > 0 ? 1 : -1);
+        }
+
+        pointerStartX.current = null;
+
+        window.setTimeout(() => {
+            suppressCardClick.current = false;
+        }, 0);
+    };
+
+    const handlePointerCancel = () => {
+        pointerStartX.current = null;
+        suppressCardClick.current = false;
     };
 
     useEffect(() => {
@@ -259,87 +323,127 @@ function TeamCarousel({
             </div>
 
             <div className="team-carousel">
-                {members.length > 1 && (
+
+                {/* PANAH SEBELUMNYA */}
+                {activeIndex > 0 && (
                     <button
                         type="button"
-                        className="team-nav team-nav--prev"
-                        onClick={() => scrollCards(-1)}
+                        className="team-carousel-arrow team-carousel-arrow--prev"
+                        onClick={() => moveCarousel(-1)}
                         aria-label="Anggota sebelumnya"
                     >
-                        <span aria-hidden="true">‹</span>
+                        <ChevronLeft size={58} strokeWidth={1.8} />
                     </button>
                 )}
 
+                {/* LAYERED CARD STAGE */}
                 <div
-                    ref={trackRef}
-                    className={`team-track ${
-                        members.length === 1
-                            ? "team-track--single"
-                            : ""
-                    }`}
+                    className="team-track team-track--layered"
+                    onPointerDown={handlePointerDown}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerCancel}
+                    onDragStart={(event) => event.preventDefault()}
                 >
-                    {members.map((member, index) => (
-                        <button
-                            type="button"
-                            className="team-card"
-                            key={member.id}
-                            style={{
-                                animationDelay: `${index * 90}ms`,
-                            }}
-                            onClick={() => setSelectedMember(member)}
-                            aria-label={`Lihat profil ${member.name}`}
-                        >
-                            <div className="team-card__photo-stage">
-                                {!member.photo_url && (
-                                    <div
-                                        className="team-card__initial"
-                                        aria-hidden="true"
-                                    >
-                                        {member.name.charAt(0).toUpperCase()}
-                                    </div>
-                                )}
+                    {members.map((member, index) => {
+                        const position = index - activeIndex;
+                        const distance = Math.abs(position);
 
-                                {member.photo_url && (
-                                    <img
-                                        src={member.photo_url}
-                                        alt={member.name}
-                                        className="team-card__photo"
-                                        loading="lazy"
-                                        onError={(event) => {
-                                            event.currentTarget.style.display =
-                                                "none";
-                                        }}
-                                    />
-                                )}
+                        if (distance > 2) return null;
 
-                                <div className="team-card__vertical">
-                                    AR4N GROUP
-                                </div>
+                        const scale =
+                            distance === 0
+                                ? 1
+                                : distance === 1
+                                    ? 0.9
+                                    : 0.76;
 
-                                <div className="team-card__info">
-                                    <h3>{member.name}</h3>
+                        const style = {
+                            transform:
+                                `translate(-50%, -50%) ` +
+                                `translateX(${position * carouselStep}px) ` +
+                                `translateY(${distance * 12}px) ` +
+                                `scale(${scale}) ` +
+                                `rotateY(${-position * 10}deg)`,
+                            zIndex: 10 - distance,
+                            opacity: distance === 2 ? 0.75 : 1,
+                        };
 
-                                    {member.position && (
-                                        <p className="team-card__position">
-                                            {member.position}
-                                        </p>
+                        return (
+                            <button
+                                type="button"
+                                key={member.id}
+                                className={`team-card team-layer-card ${
+                                    distance === 0
+                                        ? "is-active"
+                                        : "is-side"
+                                }`}
+                                style={style}
+                                onClick={() => {
+                                    if (suppressCardClick.current) {
+                                        suppressCardClick.current = false;
+                                        return;
+                                    }
+
+                                    setSelectedMember(member);
+                                }}
+                                aria-label={`Lihat profil ${member.name}`}
+                            >
+                                <div className="team-card__photo-stage">
+
+                                    {!member.photo_url && (
+                                        <div
+                                            className="team-card__initial"
+                                            aria-hidden="true"
+                                        >
+                                            {member.name.charAt(0).toUpperCase()}
+                                        </div>
                                     )}
+
+                                    {member.photo_url && (
+                                        <img
+                                            src={member.photo_url}
+                                            alt={member.name}
+                                            className="team-card__photo"
+                                            loading="lazy"
+                                            draggable={false}
+                                            onError={(event) => {
+                                                event.currentTarget.style.display = "none";
+                                            }}
+                                        />
+                                    )}
+
+                                    <div className="team-card__vertical">
+                                        AR4N GROUP
+                                    </div>
+
+                                    <div className="team-card__info">
+                                        <h3>{member.name}</h3>
+
+                                        {member.position && (
+                                            <p className="team-card__position">
+                                                {member.position}
+                                            </p>
+                                        )}
+                                    </div>
+
                                 </div>
-                            </div>
-                        </button>
-                    ))}
+                            </button>
+                        );
+                    })}
                 </div>
 
-                {members.length > 1 && (
+                {/* PANAH SELANJUTNYA */}
+                {activeIndex < members.length - 1 && (
                     <button
                         type="button"
-                        className="team-nav team-nav--next"
-                        onClick={() => scrollCards(1)}
+                        className="team-carousel-arrow team-carousel-arrow--next"
+                        onClick={() => moveCarousel(1)}
                         aria-label="Anggota berikutnya"
                     >
-                        <span aria-hidden="true">›</span>
+                        <ChevronRight size={58} strokeWidth={1.8} />
                     </button>
                 )}
+
             </div>
 
             {selectedMember &&

@@ -6931,7 +6931,6 @@ html.about-reveal-ready
     }
 }
 
-/* ABOUT PROFILE IMAGE - FIX VISIBILITY */
 
 .about-profile-motion .profile-block > img {
     opacity: 0;
@@ -7010,8 +7009,6 @@ html.about-reveal-ready
     border-color: rgba(198, 161, 115, .9);
     box-shadow: 0 22px 42px rgba(0, 0, 0, .45);
 }
-
-/* ARROW - SAME VISUAL STYLE AS PRODUCTS */
 
 .team-carousel-arrow {
     position: absolute;
@@ -7092,5 +7089,276 @@ html.about-reveal-ready
 
     .team-carousel-arrow--next {
         right: -8px;
+    }
+}
+
+.product-inquiry-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    overflow-y: auto;
+    background: rgba(8, 8, 7, .82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: inquiry-overlay-fade .3s ease both;
+}
+
+.product-inquiry-modal {
+    position: relative;
+    width: min(600px, 100%);
+    max-height: calc(100vh - 44px);
+    overflow-y: auto;
+    color: #f1eee8;
+    background: #20201d;
+    border: 1px solid rgba(198, 161, 115, .38);
+    border-radius: 12px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, .5);
+    animation: inquiry-modal-enter .4s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.product-inquiry-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 27px 30px 22px;
+    border-bottom: 1px solid rgba(241, 238, 232, .1);
+}
+
+.product-inquiry-header > div > span,
+.product-inquiry-selected > span {
+    display: block;
+    margin-bottom: 9px;
+    color: #c6a173;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .16em;
+}
+
+.product-inquiry-header h2 {
+    margin: 0 0 9px;
+    color: #f1eee8;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 400;
+}
+
+.product-inquiry-header p {
+    max-width: 430px;
+    margin: 0;
+    color: #aaa69e;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.product-inquiry-close {
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(241, 238, 232, .2);
+    border-radius: 50%;
+    color: #f1eee8;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+    transition: .25s ease;
+}
+
+.product-inquiry-close:hover {
+    color: #1c1c1a;
+    background: #c6a173;
+    border-color: #c6a173;
+}
+
+.product-inquiry-selected {
+    margin: 22px 30px 0;
+    padding: 15px 17px;
+    background: rgba(198, 161, 115, .08);
+    border: 1px solid rgba(198, 161, 115, .25);
+    border-radius: 7px;
+}
+
+.product-inquiry-selected > span {
+    margin-bottom: 5px;
+}
+
+.product-inquiry-selected strong {
+    color: #f1eee8;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.product-inquiry-form {
+    display: grid;
+    gap: 17px;
+    padding: 23px 30px 27px;
+}
+
+.product-inquiry-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.product-inquiry-field {
+    display: grid;
+    gap: 7px;
+    min-width: 0;
+}
+
+.product-inquiry-field label {
+    color: #d7d2c9;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.product-inquiry-field input,
+.product-inquiry-field textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 13px;
+    border: 1px solid rgba(241, 238, 232, .17);
+    border-radius: 6px;
+    outline: none;
+    color: #f1eee8;
+    background: #292925;
+    font-family: inherit;
+    font-size: 12px;
+    transition: border-color .25s ease, background .25s ease;
+}
+
+.product-inquiry-field input {
+    min-height: 43px;
+}
+
+.product-inquiry-field textarea {
+    min-height: 85px;
+    resize: vertical;
+}
+
+.product-inquiry-field input::placeholder,
+.product-inquiry-field textarea::placeholder {
+    color: #77736d;
+}
+
+.product-inquiry-field input:focus,
+.product-inquiry-field textarea:focus {
+    border-color: #c6a173;
+    background: #2d2c27;
+}
+
+.product-inquiry-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.product-inquiry-cancel,
+.product-inquiry-submit {
+    min-height: 43px;
+    padding: 0 19px;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s ease;
+}
+
+.product-inquiry-cancel {
+    color: #d2ccc1;
+    background: transparent;
+    border: 1px solid rgba(241, 238, 232, .2);
+}
+
+.product-inquiry-cancel:hover {
+    background: rgba(255, 255, 255, .06);
+}
+
+.product-inquiry-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #1c1c1a;
+    background: #c6a173;
+    border: 1px solid #c6a173;
+}
+
+.product-inquiry-submit:hover {
+    background: #d7b487;
+    border-color: #d7b487;
+    transform: translateY(-2px);
+}
+
+.product-inquiry-note {
+    margin: -5px 0 0;
+    color: #858078;
+    font-size: 10px;
+    line-height: 1.6;
+    text-align: right;
+}
+
+@keyframes inquiry-overlay-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes inquiry-modal-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 560px) {
+    .product-inquiry-overlay {
+        padding: 12px;
+        align-items: center;
+    }
+
+    .product-inquiry-modal {
+        max-height: calc(100vh - 24px);
+    }
+
+    .product-inquiry-header {
+        padding: 21px 19px 17px;
+    }
+
+    .product-inquiry-selected {
+        margin: 17px 19px 0;
+    }
+
+    .product-inquiry-form {
+        padding: 19px;
+    }
+
+    .product-inquiry-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-inquiry-actions {
+        flex-direction: column-reverse;
+    }
+
+    .product-inquiry-cancel,
+    .product-inquiry-submit {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-inquiry-overlay,
+    .product-inquiry-modal {
+        animation: none;
     }
 }

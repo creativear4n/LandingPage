@@ -7,6 +7,7 @@ import {
     type CSSProperties,
     type ReactNode,
     type PointerEvent,
+    type FormEvent
 } from "react";
 
 import { Link, useParams } from "react-router-dom";
@@ -1514,15 +1515,12 @@ function ProductExplanation({
 function ProductPriceCard({
     item,
     index,
+    onOrder,
 }: {
     item: PriceCardData;
     index: number;
+    onOrder: (item: PriceCardData) => void;
 }) {
-    const orderUrl =
-        item.link_order ||
-        `mailto:hello@arangroup.id?subject=${encodeURIComponent(
-            `Order ${item.title}`
-        )}`;
     return (
         <article
             className="products-price-card"
@@ -1553,20 +1551,221 @@ function ProductPriceCard({
                     {item.note}
                 </p>
             )}
-            <a
+            <button
+                type="button"
                 className="products-order-button"
-                href={orderUrl}
-                target={item.link_order ? "_blank" : undefined}
-                rel={
-                    item.link_order
-                        ? "noopener noreferrer"
-                        : undefined
-                }
+                onClick={() => onOrder(item)}
             >
                 ORDER PACKAGE
                 <ArrowUpRight size={15} />
-            </a>
+            </button>
         </article>
+    );
+}
+
+
+function ProductInquiryModal({
+    item,
+    onClose,
+}: {
+    item: PriceCardData;
+    onClose: () => void;
+}) {
+    useEffect(() => {
+        const previousOverflow = document.body.style.overflow;
+
+        document.body.style.overflow = "hidden";
+
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEscape);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener("keydown", handleEscape);
+        };
+    }, [onClose]);
+
+    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        const formData = new FormData(event.currentTarget);
+
+        const name = String(formData.get("name") ?? "").trim();
+        const address = String(formData.get("address") ?? "").trim();
+        const landArea = String(formData.get("land_area") ?? "").trim();
+        const buildingArea = String(formData.get("building_area") ?? "").trim();
+        const phone = String(formData.get("phone") ?? "").trim();
+
+        if (!name || !address || !landArea || !buildingArea || !phone) {
+            return;
+        }
+
+        const message = [
+            `Halo min ar4n.. saya ${name}, yang beralamat di ${address}.`,
+            `Mau info lebih lanjut tentang paket ${item.title} untuk luas tanah: ${landArea} m² dan luas bangunan: ${buildingArea} m².`,
+            `Nomor telepon saya: ${phone}.`,
+            "Mohon konfirmasi nya ya min.... Terima kasih 😁",
+        ].join("\n\n");
+
+        const whatsappUrl =
+            `https://wa.me/6285220469776?text=${encodeURIComponent(message)}`;
+
+        window.location.assign(whatsappUrl);
+    }
+
+    return (
+        <div
+            className="product-inquiry-overlay"
+            onMouseDown={(event) => {
+                if (event.target === event.currentTarget) {
+                    onClose();
+                }
+            }}
+        >
+            <section
+                className="product-inquiry-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="product-inquiry-title"
+            >
+                <div className="product-inquiry-header">
+                    <div>
+                        <span>AR4N GROUP · PACKAGE INQUIRY</span>
+                        <h2 id="product-inquiry-title">
+                            Form Konsultasi Paket
+                        </h2>
+                        <p>
+                            Lengkapi informasi berikut agar tim kami
+                            dapat membantu kebutuhan proyek Anda.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        className="product-inquiry-close"
+                        onClick={onClose}
+                        aria-label="Tutup formulir"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div className="product-inquiry-selected">
+                    <span>Paket yang dipilih</span>
+                    <strong>{item.title}</strong>
+                </div>
+
+                <form
+                    className="product-inquiry-form"
+                    onSubmit={handleSubmit}
+                >
+                    <div className="product-inquiry-field">
+                        <label htmlFor="inquiry-name">
+                            Nama Lengkap
+                        </label>
+                        <input
+                            id="inquiry-name"
+                            type="text"
+                            name="name"
+                            placeholder="Masukkan nama lengkap"
+                            maxLength={150}
+                            autoComplete="name"
+                            required
+                        />
+                    </div>
+
+                    <div className="product-inquiry-field">
+                        <label htmlFor="inquiry-address">
+                            Alamat Lengkap
+                        </label>
+                        <textarea
+                            id="inquiry-address"
+                            name="address"
+                            placeholder="Masukkan alamat lokasi proyek"
+                            rows={3}
+                            autoComplete="street-address"
+                            required
+                        />
+                    </div>
+
+                    <div className="product-inquiry-grid">
+                        <div className="product-inquiry-field">
+                            <label htmlFor="inquiry-land-area">
+                                Luas Tanah (m²)
+                            </label>
+                            <input
+                                id="inquiry-land-area"
+                                type="number"
+                                name="land_area"
+                                min="0.01"
+                                step="any"
+                                placeholder="Contoh: 120"
+                                required
+                            />
+                        </div>
+
+                        <div className="product-inquiry-field">
+                            <label htmlFor="inquiry-building-area">
+                                Luas Bangunan (m²)
+                            </label>
+                            <input
+                                id="inquiry-building-area"
+                                type="number"
+                                name="building_area"
+                                min="0.01"
+                                step="any"
+                                placeholder="Contoh: 90"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="product-inquiry-field">
+                        <label htmlFor="inquiry-phone">
+                            Nomor Telepon / WhatsApp
+                        </label>
+                        <input
+                            id="inquiry-phone"
+                            type="tel"
+                            name="phone"
+                            placeholder="Contoh: 081234567890"
+                            minLength={8}
+                            maxLength={20}
+                            autoComplete="tel"
+                            required
+                        />
+                    </div>
+
+                    <div className="product-inquiry-actions">
+                        <button
+                            type="button"
+                            className="product-inquiry-cancel"
+                            onClick={onClose}
+                        >
+                            Batal
+                        </button>
+
+                        <button
+                            type="submit"
+                            className="product-inquiry-submit"
+                        >
+                            Lanjut ke WhatsApp
+                            <ArrowUpRight size={17} />
+                        </button>
+                    </div>
+
+                    <p className="product-inquiry-note">
+                        Informasi ini akan dikirim ke WhatsApp AR4N Group
+                        untuk keperluan konsultasi paket.
+                    </p>
+                </form>
+            </section>
+        </div>
     );
 }
 
@@ -1579,6 +1778,7 @@ export default function Products() {
         useState<string | null>(null);
     const [projects, setProjects] = useState<ProductProject[]>([]);
     const [priceCards, setPriceCards] = useState<PriceCardData[]>([]);
+    const [selectedOrderPackage, setSelectedOrderPackage] = useState<PriceCardData | null>(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [carouselStep, setCarouselStep] = useState(155);
     const [loading, setLoading] = useState(true);
@@ -1770,6 +1970,7 @@ export default function Products() {
     }
     const heroImage = getImageUrl(heroImagePath);
     return (
+        <>
         <MainLayout page={config.page} headerOverlay>
             <main className="products-page">
                 <section className="products-hero inner-hero">
@@ -1940,6 +2141,7 @@ export default function Products() {
                                         key={item.id}
                                         item={item}
                                         index={index}
+                                        onOrder={setSelectedOrderPackage}
                                     />
                                 ))}
                             </div>
@@ -1950,7 +2152,15 @@ export default function Products() {
                         )}
                     </section>
                 </section>
-            </main>
-        </MainLayout>
+                </main>
+            </MainLayout>
+
+            {selectedOrderPackage && (
+                <ProductInquiryModal
+                    item={selectedOrderPackage}
+                    onClose={() => setSelectedOrderPackage(null)}
+                />
+            )}
+        </>
     );
 }

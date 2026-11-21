@@ -1,8 +1,7 @@
+
 import { useNavigate } from "react-router-dom";
-import {
-    ArrowUpRight,
-    Mail,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { SocialIcon } from "react-social-icons";
 import Brand from "./Brand";
 
 export default function Footer() {
@@ -32,13 +31,13 @@ export default function Footer() {
                         Let&apos;s work together
                     </p>
 
-                    <a href="mailto:hello@arangroup.id">
-                        hello@arangroup.id
+                    <a href="mailto:groupar4n@gmail.com">
+                        groupar4n@gmail.com
                         <ArrowUpRight size={15} />
                     </a>
 
-                    <a href="tel:+622315001234">
-                        +62 231 500 1234
+                    <a href="tel:+6285220469776">
+                        +62 852-2046-9776
                     </a>
                 </div>
 
@@ -47,15 +46,33 @@ export default function Footer() {
                         Follow the work
                     </p>
 
-                    <a href="mailto:hello@arangroup.id">
-                        <Mail size={16} />
-                        Email us
-                    </a>
+                    <div className="footer-social-links">
+                        <SocialIcon
+                            url="https://www.instagram.com/ar4n.group/"
+                            style={{
+                                width: 30,
+                                height: 30,
+                            }}
+                            bgColor="#c6a173"
+                            fgColor="#1c1c1a"
+                            target="_blank"
+                        />
+                        <SocialIcon
+                            url="https://www.instagram.com/ar4n.group/"
+                            style={{
+                                width: 30,
+                                height: 30,
+                            }}
+                            bgColor="#c6a173"
+                            fgColor="#1c1c1a"
+                            target="_blank"
+                        />
+                    </div>
                 </div>
             </div>
 
             <div className="page-width footer-bottom">
-                <span>© 2026 Aran Group</span>
+                <span>© 2026 AR4N Group</span>
                 <span>Cirebon, Indonesia</span>
                 <span>Designed with intention</span>
             </div>

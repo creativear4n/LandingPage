@@ -8,7 +8,7 @@ export default function WhatsAppWidget() {
     const [isOpen, setIsOpen] = useState(false);
 
     const whatsappUrl =
-        "https://wa.me/622315001234?text=Halo%20ARAN%20Group%2C%20saya%20ingin%20konsultasi.";
+        "https://wa.me/6285220469776?text=Halo%20ARAN%20Group%2C%20saya%20ingin%20konsultasi.";
 
     return (
         <div className="whatsapp-widget">

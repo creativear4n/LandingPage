@@ -143,7 +143,7 @@
     transform: rotate(-90deg) scale(.72);
     animation: frame-unfold .8s cubic-bezier(.2,.8,.2,1) .35s forwards,
                frame-draw 1.65s cubic-bezier(.65,0,.35,1) 1.1s forwards,
-               frame-to-black .35s ease 4.65s forwards;
+               frame-to-black 1.05s ease 3.8s forwards;
 }
 .outline-corner,
 .outline-center {
@@ -152,7 +152,7 @@
     stroke-dashoffset: 1;
     animation:
         corner-draw .7s ease 2.2s forwards,
-        frame-to-black .35s ease 4.65s forwards;
+        frame-to-black 1.05s ease 3.8s forwards;
 }
 
 .intro-logo-wrap {
@@ -192,10 +192,9 @@
     font: 500 9px/1 Arial, sans-serif;
     letter-spacing: .32em;
     opacity: 0;
-
     animation:
         caption-in .5s ease 3.35s forwards,
-        caption-to-black .35s ease 4.65s forwards,
+        caption-to-black 1.05s ease 3.8s forwards,
         caption-clear .3s ease 5.95s forwards;
 }
 
@@ -204,9 +203,7 @@
     height: 3px;
     border-radius: 50%;
     background: #c6a173;
-
-    animation:
-        dot-to-black .35s ease 4.65s forwards;
+    animation: dot-to-black 1.05s ease 3.8s forwards;
 }
 
 .intro-counter {
@@ -235,7 +232,14 @@
 @keyframes composition-arrive { to { transform: perspective(1000px) scale(1); } }
 @keyframes frame-unfold { to { transform: rotate(0) scale(1); } }
 @keyframes frame-draw { to { stroke-dashoffset: 0; } }
-@keyframes frame-to-black { 0% { stroke: #fff; } 100% { stroke: #111; } }
+@keyframes frame-to-black {
+    from {
+        stroke: #fff;
+    }
+    to {
+        stroke: #111;
+    }
+}
 @keyframes corner-draw { to { opacity: .55; stroke-dashoffset: 0; } }
 @keyframes logo-white-in { to { opacity: 1; } }
 @keyframes logo-white-out { to { opacity: 0; } }

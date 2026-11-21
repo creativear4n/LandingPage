@@ -71,6 +71,7 @@ function normalizeProjects(
 
 export default function Home() {
     const navigate = useNavigate();
+    
     useEffect(() => {
         document.title = "AR4N Group";
     }, []);

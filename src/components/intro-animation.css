@@ -192,14 +192,21 @@
     font: 500 9px/1 Arial, sans-serif;
     letter-spacing: .32em;
     opacity: 0;
-    animation: caption-in .5s ease 3.35s forwards,
-               caption-out .25s ease 5.35s forwards;
+
+    animation:
+        caption-in .5s ease 3.35s forwards,
+        caption-to-black .35s ease 4.65s forwards,
+        caption-clear .3s ease 5.95s forwards;
 }
+
 .intro-caption i {
     width: 3px;
     height: 3px;
     border-radius: 50%;
     background: #c6a173;
+
+    animation:
+        dot-to-black .35s ease 4.65s forwards;
 }
 
 .intro-counter {
@@ -261,6 +268,38 @@
 }
 
 @keyframes frame-clear {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes caption-to-black {
+    from {
+        color: rgba(255,255,255,.55);
+    }
+
+    to {
+        color: #111111;
+    }
+}
+
+@keyframes dot-to-black {
+    from {
+        background: #c6a173;
+    }
+
+    to {
+        background: #111111;
+    }
+}
+
+@keyframes caption-clear {
+    from {
+        opacity: 1;
+        visibility: visible;
+    }
+
     to {
         opacity: 0;
         visibility: hidden;

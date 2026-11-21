@@ -6936,7 +6936,7 @@ html.about-reveal-ready
 .about-profile-motion .profile-block > img {
     opacity: 0;
     visibility: visible;
-    animation: about-profile-image-fade .7s ease-out both !important;
+    animation: about-profile-image-fade .9s ease-out both !important;
 }
 
 .about-profile-motion .profile-block > div {

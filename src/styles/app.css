@@ -6931,19 +6931,29 @@ html.about-reveal-ready
     }
 }
 
+/* ABOUT PROFILE IMAGE - FIX VISIBILITY */
 
-html.about-reveal-ready
-.about-profile-motion .profile-block > img,
-.about-profile-motion .profile-block > div {
+.about-profile-motion .profile-block > img {
     opacity: 0;
-    transition: opacity .7s ease-in-out;
+    visibility: visible;
+    animation: about-profile-image-fade .7s ease-out both !important;
+}
+
+.about-profile-motion .profile-block > div {
+    opacity: 1;
+    visibility: visible;
     animation: none !important;
     transform: none !important;
 }
 
-.about-profile-motion .profile-block.is-ready > img,
-.about-profile-motion .profile-block.is-ready > div {
-    opacity: 1;
+@keyframes about-profile-image-fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .team-carousel {

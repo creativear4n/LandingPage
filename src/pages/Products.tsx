@@ -1609,7 +1609,7 @@ function ProductInquiryModal({
             `Halo min ar4n.. saya ${name}, yang beralamat di ${address}.`,
             `Mau info lebih lanjut tentang paket ${item.title} untuk luas tanah: ${landArea} m² dan luas bangunan: ${buildingArea} m².`,
             `Nomor telepon saya: ${phone}.`,
-            "Mohon konfirmasi nya ya min.... Terima kasih 😁",
+            "Mohon konfirmasi nya ya min.... Terima kasih",
         ].join("\n\n");
 
         const whatsappUrl =

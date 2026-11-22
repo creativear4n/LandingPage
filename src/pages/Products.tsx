@@ -1,3 +1,4 @@
+import { updatePageSeo } from "../utils/seo";
 import {
     useEffect,
     useLayoutEffect,
@@ -179,6 +180,32 @@ type ProductScopeItem = {
     icon: LucideIcon;
 };
 
+const productSeo: Record<
+    ProductSlug,
+    {
+        title: string;
+        description: string;
+    }
+> = {
+    design: {
+        title: "Jasa Arsitek & Desain Interior Cirebon | AR4N Group",
+        description:
+            "Layanan desain arsitektur dan interior untuk hunian maupun bangunan komersial. Meliputi konsep desain, visualisasi 3D, gambar kerja, dan perencanaan RAB di Cirebon.",
+    },
+
+    buildings: {
+        title: "Jasa Kontraktor & Design Build Cirebon | AR4N Group",
+        description:
+            "Layanan pembangunan dan renovasi bangunan, interior, fit-out, serta furniture custom. AR4N Group menghadirkan solusi design & build di Cirebon.",
+    },
+
+    "pbg-slf": {
+        title: "Jasa Pengurusan PBG & SLF Cirebon | AR4N Group",
+        description:
+            "Pendampingan pengurusan Persetujuan Bangunan Gedung (PBG) dan Sertifikat Laik Fungsi (SLF), mulai dari penyiapan dokumen hingga pendampingan proses teknis di Cirebon.",
+    },
+};
+
 const productDescriptions: Record<
     ProductSlug,
     {
@@ -189,15 +216,15 @@ const productDescriptions: Record<
 > = {
     design: {
         label: "DESIGN",
-        title: "Design Your Ideal Space",
+        title: "Desain Arsitektur untuk Ruang dan Bangunan Impian",
         description:
-            "Wujudkan ruang impian melalui desain arsitektur yang memadukan estetika, fungsi, dan kenyamanan. Kami membantu mengembangkan ide menjadi perencanaan yang matang dan siap direalisasikan.",
+            "Wujudkan bangunan impian melalui layanan desain arsitektur profesional yang mengutamakan estetika, fungsi, dan kenyamanan. Kami menghadirkan solusi perencanaan arsitektur mulai dari konsep desain, tata ruang, hingga pengembangan detail bangunan yang disesuaikan dengan kebutuhan dan karakter Anda. Setiap desain dirancang secara matang untuk menghasilkan ruang yang tidak hanya menarik secara visual, tetapi juga fungsional, efisien, dan siap direalisasikan.",
     },
     buildings: {
         label: "BUILDINGS",
-        title: "Build Beyond Expectations",
+        title: "Konstruksi Bangunan Berkualitas, dari Rencana hingga Realisasi",
         description:
-            "Dari perencanaan hingga pembangunan, kami menghadirkan proses konstruksi yang terarah dengan perhatian pada kualitas, detail, dan hasil akhir sesuai kebutuhan Anda.",
+            "Dari perencanaan hingga pembangunan, AR4N GROUP melalui layanan jasa konstruksi bangunan yang mengutamakan kualitas, ketepatan, dan standar pengerjaan profesional. Kami menangani pembangunan rumah tinggal, bangunan komersial, hingga proyek konstruksi lainnya dengan proses kerja yang terencana, pengawasan yang terarah, serta perhatian terhadap setiap detail. Dari tahap persiapan hingga penyelesaian, kami berkomitmen menghadirkan bangunan yang fungsional, kokoh, dan sesuai dengan kebutuhan Anda.",
     },
     "pbg-slf": {
         label: "PBG",
@@ -1785,13 +1812,17 @@ export default function Products() {
     const [error, setError] = useState<string | null>(null);
     const pointerStartX = useRef<number | null>(null);
     useEffect(() => {
-        const titles: Record<ProductSlug, string> = {
-            design: "Design",
-            buildings: "Buildings",
-            "pbg-slf": "PBG & SLF",
-        };
+        const seo = productSeo[productSlug];
 
-        document.title = `${titles[productSlug] ?? "Products"} | AR4N Group`;
+        if (!seo) {
+            return;
+        }
+
+        updatePageSeo({
+            title: seo.title,
+            description: seo.description,
+            path: window.location.pathname,
+        });
     }, [productSlug]);
     useEffect(() => {
         function updateCarouselStep() {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { updatePageSeo } from "../utils/seo";
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, Plus } from "lucide-react";
 import Header from "../components/layout/Header";
@@ -73,7 +74,13 @@ export default function Home() {
     const navigate = useNavigate();
     
     useEffect(() => {
-        document.title = "AR4N Group";
+        updatePageSeo({
+            title: "Jasa Arsitek, Interior & Design Build Cirebon | AR4N Group",
+            description:
+                "AR4N Group melayani jasa arsitektur, desain interior, design & build, konstruksi, serta pendampingan pengurusan PBG dan SLF di Cirebon.",
+            path: window.location.pathname,
+            image: "/assets/seo/thumbnail1.png",
+        });
     }, []);
         
 
@@ -180,7 +187,7 @@ export default function Home() {
 
                     <div className="hero-content page-width">
                         <p className="eyebrow">
-                            Jasa desain &amp; building Cirebon
+                            Jasa arsitektur, desain interior &amp; design build Cirebon
                         </p>
 
                         <h1>
@@ -240,7 +247,7 @@ export default function Home() {
 
                 <div className="hero-content page-width">
                     <p className="eyebrow">
-                        Jasa desain &amp; building Cirebon
+                        Jasa arsitektur, desain interior &amp; design build Cirebon
                     </p>
 
                     <h1>

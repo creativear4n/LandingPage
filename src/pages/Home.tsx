@@ -75,11 +75,11 @@ export default function Home() {
     
     useEffect(() => {
         updatePageSeo({
-            title: "Jasa Arsitek, Interior & Design Build Cirebon | AR4N Group",
+            title: "AR4N Group | Jasa Arsitek, Interior & Design Build Cirebon",
             description:
                 "AR4N Group melayani jasa arsitektur, desain interior, design & build, konstruksi, serta pendampingan pengurusan PBG dan SLF di Cirebon.",
             path: window.location.pathname,
-            image: "/assets/seo/thumbnail1.png",
+            image: "/assets/thumbnail1.png",
         });
     }, []);
         

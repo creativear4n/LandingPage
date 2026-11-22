@@ -1,3 +1,4 @@
+import { updatePageSeo } from "../utils/seo";
 import { useEffect, useState } from "react";
 
 import {
@@ -79,6 +80,35 @@ const projectCategories: Record<CategorySlug, CategoryConfig> = {
     "pbg-slf": {
         apiName: "pbg & slf",
         title: "PBG & SLF",
+    },
+};
+
+type ProjectSeoConfig = {
+    title: string;
+    description: string;
+    robots: "index,follow" | "noindex,follow";
+};
+
+const projectSeo: Record<CategorySlug, ProjectSeoConfig> = {
+    design: {
+        title: "AR4N Group | Portofolio Proyek Arsitektur & Interior Cirebon",
+        description:
+            "Lihat portofolio proyek desain arsitektur dan interior AR4N Group. Jelajahi hasil perencanaan hunian dan bangunan komersial dengan pendekatan fungsi dan karakter ruang.",
+        robots: "index,follow",
+    },
+
+    buildings: {
+        title: "AR4N Group | Portofolio Proyek Konstruksi & Design Build",
+        description:
+            "Jelajahi portofolio proyek pembangunan, renovasi, dan design build AR4N Group dengan perhatian pada kualitas pengerjaan dan kebutuhan setiap bangunan.",
+        robots: "noindex,follow",
+    },
+
+    "pbg-slf": {
+        title: "AR4N Group | Portofolio Pengurusan PBG & SLF",
+        description:
+            "Informasi proyek pendampingan pengurusan Persetujuan Bangunan Gedung (PBG) dan Sertifikat Laik Fungsi (SLF) oleh AR4N Group.",
+        robots: "noindex,follow",
     },
 };
 
@@ -396,7 +426,11 @@ function ProjectError({
     );
 }
 
-export default function Projects() {
+export default function Projects({
+    manageSeo = true,
+}: {
+    manageSeo?: boolean;
+}) {
     const { category } = useParams();
 
     const [projectHeroImage, setProjectHeroImage] =
@@ -417,12 +451,48 @@ export default function Projects() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const title = categoryConfig?.title
-            ? `${categoryConfig.title} Projects`
-            : "Projects";
+        if (!isCategorySlug(category)) {
+            updatePageSeo({
+                title: "Projects | AR4N Group",
+                description:
+                    "Jelajahi portofolio proyek arsitektur, interior, dan konstruksi AR4N Group.",
+                path: category
+                    ? `/projects/${category}`
+                    : "/projects",
+                robots: "noindex,follow",
+            });
 
-        document.title = `${title} | AR4N Group`;
-    }, [categoryConfig]);
+            return;
+        }
+
+        updatePageSeo({
+            ...projectSeo[category],
+            path: `/projects/${category}`,
+        });
+    }, [category]);
+
+    useEffect(() => {
+        if (!manageSeo) return;
+
+        if (!isCategorySlug(category)) {
+            updatePageSeo({
+                title: "Projects | AR4N Group",
+                description:
+                    "Jelajahi portofolio proyek arsitektur, interior, dan konstruksi AR4N Group.",
+                path: category
+                    ? `/projects/${category}`
+                    : "/projects",
+                robots: "noindex,follow",
+            });
+
+            return;
+        }
+
+        updatePageSeo({
+            ...projectSeo[category],
+            path: `/projects/${category}`,
+        });
+    }, [category, manageSeo]);
 
     useEffect(() => {
         let active = true;
@@ -806,6 +876,28 @@ export function ProjectDetail() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        const categoryTitle = categoryConfig?.title ?? "Projects";
+        const rawDescription = project?.description?.trim();
+
+        updatePageSeo({
+            title: project
+                ? `${project.title} | ${categoryTitle} Projects | AR4N Group`
+                : `${categoryTitle} Project | AR4N Group`,
+
+            description: rawDescription
+                ? rawDescription.replace(/\s+/g, " ").slice(0, 160)
+                : `Lihat detail proyek ${categoryTitle.toLowerCase()} AR4N Group.`,
+
+            path:
+                category && projectId
+                    ? `/projects/${category}/${projectId}`
+                    : "/projects",
+
+            robots: "noindex,follow",
+        });
+    }, [category, projectId, project, categoryConfig]);
+
+    useEffect(() => {
         let active = true;
 
         async function loadProjectDetail() {
@@ -901,7 +993,7 @@ export function ProjectDetail() {
     if (loading) {
         return (
             <>
-                <Projects />
+                <Projects manageSeo={false} />
 
                 <div className="project-modal">
                     <div className="project-modal-inner">
@@ -921,7 +1013,7 @@ export function ProjectDetail() {
     if (error || !project || !categoryConfig) {
         return (
             <>
-                <Projects />
+                <Projects manageSeo={false} />
 
                 <div
                     className="project-modal"
@@ -965,7 +1057,7 @@ export function ProjectDetail() {
 
     return (
         <>
-            <Projects />
+            <Projects manageSeo={false} />
 
             <ProjectModal
                 project={project}

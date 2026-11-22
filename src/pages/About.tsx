@@ -1,3 +1,4 @@
+import { updatePageSeo } from "../utils/seo";
 import {
     useEffect,
     useId,
@@ -533,8 +534,13 @@ export default function About() {
     useState(false);
 
     useEffect(() => {
-        document.title = "About Us | AR4N Group";
-
+        updatePageSeo({
+            title: "Tentang AR4N Group | Jasa Arsitektur & Design Build Cirebon",
+            description:
+                "Kenali AR4N Group, penyedia layanan arsitektur, desain interior, design & build, serta konstruksi untuk hunian dan bangunan komersial di Cirebon.",
+            path: "/about",
+            robots: "index,follow",
+        });
         let active = true;
 
         async function loadAboutPage() {

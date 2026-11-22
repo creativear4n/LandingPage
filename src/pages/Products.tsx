@@ -188,19 +188,19 @@ const productSeo: Record<
     }
 > = {
     design: {
-        title: "Jasa Arsitek & Desain Interior Cirebon | AR4N Group",
+        title: "AR4N Group | Products | Design Arsitektur",
         description:
             "Layanan desain arsitektur dan interior untuk hunian maupun bangunan komersial. Meliputi konsep desain, visualisasi 3D, gambar kerja, dan perencanaan RAB di Cirebon.",
     },
 
     buildings: {
-        title: "Jasa Kontraktor & Design Build Cirebon | AR4N Group",
+        title: "AR4N Group | Products | Jasa Kontraktor & Design Build",
         description:
             "Layanan pembangunan dan renovasi bangunan, interior, fit-out, serta furniture custom. AR4N Group menghadirkan solusi design & build di Cirebon.",
     },
 
     "pbg-slf": {
-        title: "Jasa Pengurusan PBG & SLF Cirebon | AR4N Group",
+        title: "AR4N Group | Products | Jasa Pengurusan PBG & SLF Cirebon",
         description:
             "Pendampingan pengurusan Persetujuan Bangunan Gedung (PBG) dan Sertifikat Laik Fungsi (SLF), mulai dari penyiapan dokumen hingga pendampingan proses teknis di Cirebon.",
     },

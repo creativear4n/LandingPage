@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ar4n.com/sitemap.xml

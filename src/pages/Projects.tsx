@@ -103,14 +103,14 @@ const projectSeo: Record<CategorySlug, ProjectSeoConfig> = {
         title: "AR4N Group | Portofolio Proyek Konstruksi & Design Build",
         description:
             "Jelajahi portofolio proyek pembangunan, renovasi, dan design build AR4N Group dengan perhatian pada kualitas pengerjaan dan kebutuhan setiap bangunan.",
-        robots: "noindex,follow",
+        robots: "index,follow",
     },
 
     "pbg-slf": {
         title: "AR4N Group | Portofolio Pengurusan PBG & SLF",
         description:
             "Informasi proyek pendampingan pengurusan Persetujuan Bangunan Gedung (PBG) dan Sertifikat Laik Fungsi (SLF) oleh AR4N Group.",
-        robots: "noindex,follow",
+        robots: "index,follow",
     },
 };
 
@@ -464,7 +464,7 @@ export default function Projects({
                 path: category
                     ? `/projects/${category}`
                     : "/projects",
-                robots: "noindex,follow",
+                robots: "index,follow",
             });
 
             return;
@@ -487,7 +487,7 @@ export default function Projects({
                 path: category
                     ? `/projects/${category}`
                     : "/projects",
-                robots: "noindex,follow",
+                robots: "index,follow",
             });
 
             return;
@@ -902,7 +902,7 @@ export function ProjectDetail() {
                     ? `/projects/${category}/${projectId}`
                     : "/projects",
 
-            robots: "noindex,follow",
+            robots: "index,follow",
         });
     }, [category, projectId, project, categoryConfig]);
 

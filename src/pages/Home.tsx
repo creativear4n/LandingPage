@@ -24,6 +24,11 @@ const images = {
         "https://images.pexels.com/photos/37429756/pexels-photo-37429756.png?auto=compress&cs=tinysrgb&h=650&w=940",
 };
 
+type HomeProject = Project & {
+    thumbnail_path?: string | null;
+    thumbnail_url?: string | null;
+};
+
 function normalizeDashboard(
     data: ApiDashboard | null
 ): Dashboard | null {
@@ -52,10 +57,18 @@ function normalizeDashboard(
 
 function normalizeProjects(
     data: ApiProjectsResponse
-): Project[] {
+): HomeProject[] {
     return (data.projects ?? []).map((project) => ({
         ...project,
+
+        thumbnail_path: project.thumbnail_path ?? null,
+
+        thumbnail_url: getImageUrl(
+            project.thumbnail_url || project.thumbnail_path
+        ),
+
         category: project.category ?? null,
+
         images: (project.images ?? [])
             .map((image) => ({
                 ...image,
@@ -88,7 +101,7 @@ export default function Home() {
         useState<Dashboard | null>(null);
 
     const [projects, setProjects] =
-        useState<Project[]>([]);
+        useState<HomeProject[]>([]);
 
     const [loading, setLoading] = useState(true);
 
@@ -155,16 +168,16 @@ export default function Home() {
     const homeProjects = projects.slice(0, 4);
 
     const galleryImages = projects.flatMap((project) =>
-        [...(project.images ?? [])]
-            .sort(
-                (a, b) => a.sort_order - b.sort_order
-            )
-            .map((image) => ({
-                ...image,
-                projectTitle: project.title,
-            }))
+        project.thumbnail_url
+            ? [
+                {
+                    id: project.id,
+                    image_url: project.thumbnail_url,
+                    projectTitle: project.title,
+                },
+            ]
+            : []
     );
-
     const visibleGalleryImages = showAllGallery
         ? galleryImages
         : galleryImages.slice(0, 8);
@@ -377,7 +390,7 @@ export default function Home() {
                                 <div className="project-image">
                                     <img
                                         src={
-                                            project.images?.[0]?.image_url ||
+                                            project.thumbnail_url ||
                                             images.officeThree
                                         }
                                         alt={project.title}

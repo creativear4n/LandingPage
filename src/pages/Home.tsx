@@ -605,6 +605,7 @@ export default function Home() {
                                 <Link
                                     className={itemClass}
                                     to={`/projects/${image.categorySlug}/${image.id}`}
+                                    state={{ from: "home" }}
                                     key={image.id}
                                     aria-label={`Lihat detail proyek ${image.projectTitle}`}
                                 >

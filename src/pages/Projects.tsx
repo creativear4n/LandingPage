@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import {
     Link,
+    useLocation,
     useNavigate,
     useParams,
 } from "react-router-dom";
@@ -851,6 +852,8 @@ export function ProjectDetail() {
         projectId,
     } = useParams();
 
+    const location = useLocation();
+
     const navigate = useNavigate();
 
     const categoryConfig = isCategorySlug(category)
@@ -986,6 +989,10 @@ export function ProjectDetail() {
     }, [category, projectId]);
 
     const closeModal = () => {
+        if  (location.state?.from === "home") {
+            navigate("/", {replace: true });
+            return;
+        }
         if (isCategorySlug(category)) {
             navigate(`/projects/${category}`);
         } else {

@@ -2,6 +2,11 @@
     RewriteEngine On
     RewriteBase /
 
+    # Redirect WWW to the canonical domain
+    RewriteCond %{HTTP_HOST} ^www\.ar4n\.com$ [NC]
+    RewriteRule ^ https://ar4n.com%{REQUEST_URI} [R=302,L]
+
+    # React SPA routing
     RewriteRule ^index\.html$ - [L]
 
     RewriteCond %{REQUEST_FILENAME} !-f

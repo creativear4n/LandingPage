@@ -96,21 +96,21 @@ const projectSeo: Record<CategorySlug, ProjectSeoConfig> = {
         title: "AR4N Group | Portofolio Proyek Arsitektur & Interior Cirebon",
         description:
             "Lihat portofolio proyek desain arsitektur dan interior AR4N Group. Jelajahi hasil perencanaan hunian dan bangunan komersial dengan pendekatan fungsi dan karakter ruang.",
-        robots: "noindex,follow",
+        robots: "index,follow",
     },
 
     buildings: {
         title: "AR4N Group | Portofolio Proyek Konstruksi & Design Build",
         description:
             "Jelajahi portofolio proyek pembangunan, renovasi, dan design build AR4N Group dengan perhatian pada kualitas pengerjaan dan kebutuhan setiap bangunan.",
-        robots: "noindex,follow",
+        robots: "index,follow",
     },
 
     "pbg-slf": {
         title: "AR4N Group | Portofolio Pengurusan PBG & SLF",
         description:
             "Informasi proyek pendampingan pengurusan Persetujuan Bangunan Gedung (PBG) dan Sertifikat Laik Fungsi (SLF) oleh AR4N Group.",
-        robots: "noindex,follow",
+        robots: "index,follow",
     },
 };
 
@@ -454,27 +454,6 @@ export default function Projects({
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (!isCategorySlug(category)) {
-            updatePageSeo({
-                title: "Projects | AR4N Group",
-                description:
-                    "Jelajahi portofolio proyek arsitektur, interior, dan konstruksi AR4N Group.",
-                path: category
-                    ? `/projects/${category}`
-                    : "/projects",
-                robots: "noindex,follow",
-            });
-
-            return;
-        }
-
-        updatePageSeo({
-            ...projectSeo[category],
-            path: `/projects/${category}`,
-        });
-    }, [category]);
 
     useEffect(() => {
         if (!manageSeo) return;

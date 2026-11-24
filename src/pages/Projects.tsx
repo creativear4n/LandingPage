@@ -10,6 +10,8 @@ import {
 import {
     ArrowLeft,
     ArrowUpRight,
+    ChevronLeft,
+    ChevronRight,
     Search,
     X,
 } from "lucide-react";
@@ -1077,50 +1079,126 @@ function ProjectModal({
     categoryTitle: string;
     onClose: () => void;
 }) {
+    const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+    const isPbgProject = project.is_pbg === true;
+
+    const orderedImages = [...project.images]
+        .filter((image) => image.image_url)
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .slice(0, 20);
+
+    const mainImage =
+        project.thumbnail_url ||
+        orderedImages[0]?.image_url ||
+        null;
+
+    const galleryImages = isPbgProject
+        ? []
+        : orderedImages.filter(
+              (image) => image.image_url !== mainImage
+          );
+
+    const lightboxImages = [
+        ...(mainImage
+            ? [
+                  {
+                      src: mainImage,
+                      alt: project.title,
+                  },
+              ]
+            : []),
+
+        ...galleryImages.map((image, index) => ({
+            src: image.image_url,
+            alt: `${project.title} - Photo ${index + 1}`,
+        })),
+    ];
+
+    const activeLightboxImage =
+        lightboxIndex !== null
+            ? lightboxImages[lightboxIndex] ?? null
+            : null;
+
+    const workArea = formatWorkArea(project.work_area);
+
+    // Lock background scrolling while project detail is open.
     useEffect(() => {
         const previousOverflow = document.body.style.overflow;
 
         document.body.style.overflow = "hidden";
 
-        const closeOnEscape = (event: KeyboardEvent) => {
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, []);
+
+    // Keyboard navigation for modal and image preview.
+    useEffect(() => {
+        const handleKeyboard = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
-                onClose();
+                if (lightboxIndex !== null) {
+                    setLightboxIndex(null);
+                } else {
+                    onClose();
+                }
+
+                return;
+            }
+
+            if (
+                lightboxIndex === null ||
+                lightboxImages.length <= 1
+            ) {
+                return;
+            }
+
+            if (event.key === "ArrowRight") {
+                event.preventDefault();
+
+                setLightboxIndex(
+                    (lightboxIndex + 1) % lightboxImages.length
+                );
+            }
+
+            if (event.key === "ArrowLeft") {
+                event.preventDefault();
+
+                setLightboxIndex(
+                    (lightboxIndex - 1 + lightboxImages.length) %
+                        lightboxImages.length
+                );
             }
         };
 
-        document.addEventListener(
-            "keydown",
-            closeOnEscape
-        );
+        document.addEventListener("keydown", handleKeyboard);
 
         return () => {
-            document.body.style.overflow = previousOverflow;
-
-            document.removeEventListener(
-                "keydown",
-                closeOnEscape
-            );
+            document.removeEventListener("keydown", handleKeyboard);
         };
-    }, [onClose]);
+    }, [lightboxIndex, lightboxImages.length, onClose]);
 
-    const isPbgProject = project.is_pbg === true;
+    const showPreviousImage = () => {
+        setLightboxIndex((current) => {
+            if (current === null || lightboxImages.length <= 1) {
+                return current;
+            }
 
-    const mainImage =
-        project.thumbnail_url ||
-        project.images.find(
-            (image) => image.image_url
-        )?.image_url ||
-        null;
+            return (
+                current - 1 + lightboxImages.length
+            ) % lightboxImages.length;
+        });
+    };
 
-    const galleryImages = isPbgProject
-        ? []
-        : project.images
-            .filter((image) => image.image_url)
-            .filter((image) => image.image_url !== mainImage);
+    const showNextImage = () => {
+        setLightboxIndex((current) => {
+            if (current === null || lightboxImages.length <= 1) {
+                return current;
+            }
 
-    const workArea = formatWorkArea(
-        project.work_area
-    );
+            return (current + 1) % lightboxImages.length;
+        });
+    };
 
     return (
         <div
@@ -1135,9 +1213,6 @@ function ProjectModal({
             }}
         >
             <div className="project-modal-inner">
-
-                {/* CLOSE BUTTON */}
-
                 <button
                     className="modal-close"
                     onClick={onClose}
@@ -1147,31 +1222,22 @@ function ProjectModal({
                 </button>
 
                 <div className="project-modal-content">
-
                     {/* PROJECT HEADER */}
-
                     <div className="project-modal-hero">
-
                         <div className="project-modal-information">
-
                             <div className="project-modal-breadcrumb">
                                 <span>OUR PORTFOLIO</span>
                                 <span>/</span>
-                                <span>
-                                    {categoryTitle.toUpperCase()}
-                                </span>
+                                <span>{categoryTitle.toUpperCase()}</span>
                             </div>
 
                             <p className="project-modal-kicker">
                                 {isPbgProject
                                     ? "COMPANY / PROJECT INFORMATION"
-                                    : "PROJECT DETAIL"
-                                }
+                                    : "PROJECT DETAIL"}
                             </p>
 
-                            <h2>
-                                {project.title}
-                            </h2>
+                            <h2>{project.title}</h2>
 
                             {isPbgProject && workArea && (
                                 <p className="project-modal-area">
@@ -1185,17 +1251,35 @@ function ProjectModal({
                                     {project.description}
                                 </p>
                             )}
-
                         </div>
 
-                        {/* FEATURED IMAGE / COMPANY LOGO */}
-
+                        {/* FEATURED IMAGE */}
                         <div
-                            className={
-                                `project-modal-featured ${
-                                    isPbgProject ? "is-pbg" : ""
-                                }`
+                            className={`project-modal-featured ${
+                                isPbgProject ? "is-pbg" : ""
+                            } ${mainImage ? "is-zoomable" : ""}`}
+                            role={mainImage ? "button" : undefined}
+                            tabIndex={mainImage ? 0 : undefined}
+                            aria-label={
+                                mainImage
+                                    ? `Perbesar foto utama ${project.title}`
+                                    : undefined
                             }
+                            onClick={() => {
+                                if (mainImage) {
+                                    setLightboxIndex(0);
+                                }
+                            }}
+                            onKeyDown={(event) => {
+                                if (
+                                    mainImage &&
+                                    (event.key === "Enter" ||
+                                        event.key === " ")
+                                ) {
+                                    event.preventDefault();
+                                    setLightboxIndex(0);
+                                }
+                            }}
                         >
                             {mainImage ? (
                                 <img
@@ -1216,26 +1300,16 @@ function ProjectModal({
 
                                     <div className="project-modal-featured-overlay">
                                         <span>SELECTED PROJECT</span>
-
-                                        <strong>
-                                            {project.title}
-                                        </strong>
+                                        <strong>{project.title}</strong>
                                     </div>
                                 </>
                             )}
                         </div>
-
                     </div>
 
-                    {/* 
-                        GALLERY
-                        Hanya untuk Design dan Buildings.
-                        PBG / SLF tidak menampilkan galeri foto.
-                    */}
-
+                    {/* PROJECT GALLERY */}
                     {!isPbgProject && (
                         <section className="project-modal-gallery">
-
                             <div className="project-modal-gallery-heading">
                                 <div>
                                     <p>PROJECT DOCUMENTATION</p>
@@ -1249,40 +1323,70 @@ function ProjectModal({
 
                             {galleryImages.length > 0 ? (
                                 <div className="project-modal-gallery-grid">
-                                    {galleryImages.map((image, index) => (
-                                        <figure
-                                            className="project-modal-gallery-item"
-                                            key={image.id}
-                                            style={{
-                                                animationDelay: `${Math.min(index * 100, 600)}ms`,
-                                            }}
-                                        >
-                                            <img
-                                                src={image.image_url}
-                                                alt={`${project.title} - Photo ${index + 1}`}
-                                                loading="lazy"
-                                                decoding="async"
-                                            />
+                                    {galleryImages.map((image, index) => {
+                                        const imageNumber = String(
+                                            index + 1
+                                        ).padStart(2, "0");
 
-                                            <figcaption>
-                                                <span>
-                                                    {String(index + 1).padStart(2, "0")}
-                                                </span>
-                                            </figcaption>
-                                        </figure>
-                                    ))}
+                                        const imageClass =
+                                            `gallery-${(index % 8) + 1}`;
+
+                                        const imageIndex = mainImage
+                                            ? index + 1
+                                            : index;
+
+                                        return (
+                                            <figure
+                                                className={`project-modal-gallery-item ${imageClass}`}
+                                                key={image.id}
+                                                role="button"
+                                                tabIndex={0}
+                                                aria-label={`Lihat foto ${imageNumber} ukuran besar`}
+                                                style={{
+                                                    animationDelay: `${Math.min(
+                                                        index * 70,
+                                                        700
+                                                    )}ms`,
+                                                }}
+                                                onClick={() =>
+                                                    setLightboxIndex(imageIndex)
+                                                }
+                                                onKeyDown={(event) => {
+                                                    if (
+                                                        event.key === "Enter" ||
+                                                        event.key === " "
+                                                    ) {
+                                                        event.preventDefault();
+                                                        setLightboxIndex(
+                                                            imageIndex
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                <img
+                                                    src={image.image_url}
+                                                    alt={`${project.title} - Photo ${index + 1}`}
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                />
+
+                                                <figcaption>
+                                                    <span>{imageNumber}</span>
+                                                    <ArrowUpRight size={17} />
+                                                </figcaption>
+                                            </figure>
+                                        );
+                                    })}
                                 </div>
                             ) : (
                                 <div className="project-modal-gallery-empty">
                                     Foto galeri tambahan belum tersedia.
                                 </div>
                             )}
-
                         </section>
                     )}
 
                     {/* FOOTER */}
-
                     <div className="project-modal-footer">
                         <button
                             className="project-modal-back"
@@ -1292,9 +1396,70 @@ function ProjectModal({
                             Back to Projects
                         </button>
                     </div>
-
                 </div>
             </div>
+
+            {/* IMAGE LIGHTBOX */}
+            {activeLightboxImage && (
+                <div
+                    className="project-image-lightbox"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Preview foto project"
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) {
+                            setLightboxIndex(null);
+                        }
+                    }}
+                >
+                    <button
+                        type="button"
+                        className="project-image-lightbox-close"
+                        onClick={() => setLightboxIndex(null)}
+                        aria-label="Tutup preview gambar"
+                    >
+                        <X size={23} />
+                    </button>
+
+                    {lightboxImages.length > 1 && (
+                        <>
+                            <button
+                                type="button"
+                                className="project-image-lightbox-nav prev"
+                                onClick={showPreviousImage}
+                                aria-label="Foto sebelumnya"
+                            >
+                                <ChevronLeft size={30} />
+                            </button>
+
+                            <button
+                                type="button"
+                                className="project-image-lightbox-nav next"
+                                onClick={showNextImage}
+                                aria-label="Foto berikutnya"
+                            >
+                                <ChevronRight size={30} />
+                            </button>
+                        </>
+                    )}
+
+                    <figure className="project-image-lightbox-content">
+                        <img
+                            src={activeLightboxImage.src}
+                            alt={activeLightboxImage.alt}
+                        />
+
+                        <figcaption>
+                            {activeLightboxImage.alt}
+
+                            <span>
+                                {(lightboxIndex ?? 0) + 1} /{" "}
+                                {lightboxImages.length}
+                            </span>
+                        </figcaption>
+                    </figure>
+                </div>
+            )}
         </div>
     );
 }

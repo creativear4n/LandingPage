@@ -7701,46 +7701,136 @@ html.about-reveal-ready
     line-height: 1.7;
 }
 
+/* =========================================
+   AR4N GROUP - PROJECT EDITORIAL COLLAGE
+   Only affects standard project listing
+========================================= */
+
 .projects-page-axiom .projects-list-grid-standard {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-rows: 36px;
+    grid-auto-flow: row;
+    gap: 17px;
     align-items: stretch;
 }
 
-.projects-page-axiom .projects-list-grid-standard > .projects-list-card:nth-child(n) {
-    grid-column: auto;
+/* Reset layout kartu lama */
+.projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(n) {
     display: flex;
     flex-direction: column;
+    grid-column: span 6;
+    grid-row: span 7;
+    width: 100%;
+    min-width: 0;
     min-height: 0;
     height: 100%;
 }
 
+/* KOMPOSISI KOLEKSI */
+
+/* Pair 1: vertical + landscape */
 .projects-page-axiom .projects-list-grid-standard
-.projects-list-card:nth-child(n) .projects-list-image {
-    width: 100%;
-    height: auto;
-    min-height: 0;
-    aspect-ratio: 1.45;
+> .projects-list-card:nth-child(10n + 1) {
+    grid-column: span 5;
+    grid-row: span 8;
 }
 
 .projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(10n + 2) {
+    grid-column: span 7;
+    grid-row: span 8;
+}
+
+/* Pair 2: landscape + vertical */
+.projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(10n + 3) {
+    grid-column: span 7;
+    grid-row: span 6;
+}
+
+.projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(10n + 4) {
+    grid-column: span 5;
+    grid-row: span 6;
+}
+
+/* Pair 3: small + wide */
+.projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(10n + 5) {
+    grid-column: span 4;
+    grid-row: span 7;
+}
+
+.projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(10n + 6) {
+    grid-column: span 8;
+    grid-row: span 7;
+}
+
+/* Pair 4: wide + small */
+.projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(10n + 7) {
+    grid-column: span 8;
+    grid-row: span 6;
+}
+
+.projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(10n + 8) {
+    grid-column: span 4;
+    grid-row: span 6;
+}
+
+/* Pair 5 */
+.projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(10n + 9) {
+    grid-column: span 5;
+    grid-row: span 8;
+}
+
+.projects-page-axiom .projects-list-grid-standard
+> .projects-list-card:nth-child(10n + 10) {
+    grid-column: span 7;
+    grid-row: span 8;
+}
+
+/* IMAGES */
+.projects-page-axiom .projects-list-grid-standard
+.projects-list-card:nth-child(n) .projects-list-image {
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: auto;
+    overflow: hidden;
+}
+
+.projects-page-axiom .projects-list-grid-standard
+.projects-list-card:nth-child(n) .projects-list-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* INFORMATION */
+.projects-page-axiom .projects-list-grid-standard
 .projects-list-card:nth-child(n) .projects-list-meta {
     display: grid;
-    grid-template-columns: 28px minmax(0, 1fr) 38px;
+    grid-template-columns: 27px minmax(0, 1fr) 36px;
     grid-template-rows: auto auto;
     align-items: center;
-    gap: 8px 12px;
-    min-height: 120px;
-    padding: 18px 20px;
+    gap: 7px 11px;
+    min-height: 112px;
+    padding: 17px 18px;
 }
 
 .projects-page-axiom .projects-list-grid-standard
 .projects-list-card:nth-child(n) .projects-list-meta > span {
     grid-column: 1;
     grid-row: 1 / 3;
-    margin: 0;
     align-self: start;
+    margin: 0;
 }
 
 .projects-page-axiom .projects-list-grid-standard
@@ -7748,7 +7838,6 @@ html.about-reveal-ready
     grid-column: 2;
     grid-row: 1;
     margin: 0;
-    font-family: "Space Grotesk", sans-serif;
     font-size: 18px;
     font-weight: 600;
     line-height: 1.3;
@@ -7767,7 +7856,7 @@ html.about-reveal-ready
     grid-row: 2;
     margin: 0;
     color: #929b96;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.5;
 
     display: -webkit-box;
@@ -7781,75 +7870,49 @@ html.about-reveal-ready
 .projects-list-card:nth-child(n) .projects-list-arrow {
     grid-column: 3;
     grid-row: 1 / 3;
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     margin: 0;
-    padding: 10px;
+    padding: 9px;
 }
 
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 650px) {
-    .projects-page-axiom .projects-listing.page-width {
-        width: calc(100% - 36px);
-        padding: 48px 0 40px;
-    }
-
-    .projects-page-axiom .projects-listing-heading {
-        grid-template-columns: 1fr;
-        gap: 13px;
-        margin-bottom: 28px;
-        padding-bottom: 22px;
-    }
-
-    .projects-page-axiom .projects-listing-heading h1 {
-        grid-column: 1;
-        grid-row: auto;
-        font-size: 42px;
-    }
-
-    .projects-page-axiom .projects-listing-description,
-    .projects-page-axiom .projects-count {
-        grid-column: 1;
-        grid-row: auto;
-    }
-
-    .projects-page-axiom .projects-listing-description {
-        font-size: 12px;
-        line-height: 1.65;
-    }
-
+/* TABLET */
+@media (max-width: 900px) {
     .projects-page-axiom .projects-list-grid-standard {
-        grid-template-columns: 1fr;
+        grid-auto-rows: 30px;
+        gap: 12px;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 650px) {
+    .projects-page-axiom .projects-list-grid-standard {
+        grid-template-columns: minmax(0, 1fr);
+        grid-auto-rows: auto;
+        grid-auto-flow: row;
         gap: 16px;
     }
 
     .projects-page-axiom .projects-list-grid-standard
-    .projects-list-card:nth-child(n) {
-        grid-column: 1 / -1;
+    > .projects-list-card:nth-child(n) {
+        grid-column: 1;
+        grid-row: auto;
+        height: auto;
     }
 
     .projects-page-axiom .projects-list-grid-standard
     .projects-list-card:nth-child(n) .projects-list-image {
-        aspect-ratio: 1.55;
+        flex: none;
+        aspect-ratio: 1.5;
     }
 
     .projects-page-axiom .projects-list-grid-standard
-    .projects-list-card:nth-child(n) .projects-list-meta {
-        grid-template-columns: 26px minmax(0, 1fr) 36px;
-        min-height: 112px;
-        padding: 16px;
-        gap: 8px 10px;
+    .projects-list-card:nth-child(3n + 2) .projects-list-image {
+        aspect-ratio: 1.2;
     }
 
     .projects-page-axiom .projects-list-grid-standard
-    .projects-list-meta h2 {
-        font-size: 17px;
-    }
-
-    .projects-page-axiom .projects-list-excerpt {
-        font-size: 11.5px;
+    .projects-list-card:nth-child(3n) .projects-list-image {
+        aspect-ratio: 1.7;
     }
 }

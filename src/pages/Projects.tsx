@@ -96,21 +96,21 @@ const projectSeo: Record<CategorySlug, ProjectSeoConfig> = {
         title: "AR4N Group | Portofolio Proyek Arsitektur & Interior Cirebon",
         description:
             "Lihat portofolio proyek desain arsitektur dan interior AR4N Group. Jelajahi hasil perencanaan hunian dan bangunan komersial dengan pendekatan fungsi dan karakter ruang.",
-        robots: "index,follow",
+        robots: "noindex,follow",
     },
 
     buildings: {
         title: "AR4N Group | Portofolio Proyek Konstruksi & Design Build",
         description:
             "Jelajahi portofolio proyek pembangunan, renovasi, dan design build AR4N Group dengan perhatian pada kualitas pengerjaan dan kebutuhan setiap bangunan.",
-        robots: "index,follow",
+        robots: "noindex,follow",
     },
 
     "pbg-slf": {
         title: "AR4N Group | Portofolio Pengurusan PBG & SLF",
         description:
             "Informasi proyek pendampingan pengurusan Persetujuan Bangunan Gedung (PBG) dan Sertifikat Laik Fungsi (SLF) oleh AR4N Group.",
-        robots: "index,follow",
+        robots: "noindex,follow",
     },
 };
 
@@ -464,7 +464,7 @@ export default function Projects({
                 path: category
                     ? `/projects/${category}`
                     : "/projects",
-                robots: "index,follow",
+                robots: "noindex,follow",
             });
 
             return;
@@ -487,7 +487,7 @@ export default function Projects({
                 path: category
                     ? `/projects/${category}`
                     : "/projects",
-                robots: "index,follow",
+                robots: "noindex,follow",
             });
 
             return;
@@ -885,24 +885,39 @@ export function ProjectDetail() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const categoryTitle = categoryConfig?.title ?? "Projects";
+        const hasValidProject = Boolean(
+            project &&
+            categoryConfig &&
+            projectId &&
+            /^\d+$/.test(projectId) &&
+            Number(project.id) === Number(projectId)
+        );
+
         const rawDescription = project?.description?.trim();
 
         updatePageSeo({
-            title: project
-                ? `${project.title} | ${categoryTitle} Projects | AR4N Group`
-                : `${categoryTitle} Project | AR4N Group`,
+            title: project && categoryConfig
+                ? `${project.title} | ${categoryConfig.title} Projects | AR4N Group`
+                : `${categoryConfig?.title ?? "Projects"} | AR4N Group`,
 
             description: rawDescription
                 ? rawDescription.replace(/\s+/g, " ").slice(0, 160)
-                : `Lihat detail proyek ${categoryTitle.toLowerCase()} AR4N Group.`,
+                : `Lihat detail proyek ${categoryConfig?.title.toLowerCase() ?? "AR4N Group"}.`,
 
             path:
                 category && projectId
                     ? `/projects/${category}/${projectId}`
                     : "/projects",
 
-            robots: "index,follow",
+            robots: hasValidProject
+                ? "index,follow"
+                : "noindex,follow",
+
+            image: project?.thumbnail_url || undefined,
+
+            imageAlt: project
+                ? `${project.title} - AR4N Group`
+                : undefined,
         });
     }, [category, projectId, project, categoryConfig]);
 
@@ -985,7 +1000,7 @@ export function ProjectDetail() {
         }
 
         loadProjectDetail();
-
+        setProject(null);
         return () => {
             active = false;
         };

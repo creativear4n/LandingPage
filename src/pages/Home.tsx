@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { updatePageSeo } from "../utils/seo";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowUpRight, Plus } from "lucide-react";
 import Header from "../components/layout/Header";
 import MainLayout from "../components/layout/MainLayout";
 import ProjectModal from "../components/projects/ProjectModal";
 import {
     getDashboard,
+    getProducts,
     getProjects,
     getImageUrl,
 } from "../services/api";
 import type {
     ApiDashboard,
+    ApiProduct,
     ApiProjectsResponse,
     Dashboard,
     Project,
@@ -25,9 +27,43 @@ const images = {
 };
 
 type HomeProject = Project & {
+    id_product?: number | null;
+    product?: {
+        id?: number | null;
+    } | null;
     thumbnail_path?: string | null;
     thumbnail_url?: string | null;
 };
+
+type ProjectCategorySlug = "design" | "buildings" | "pbg-slf";
+
+function getProjectCategorySlug(
+    productName?: string | null
+): ProjectCategorySlug | null {
+    const name = (productName ?? "")
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ");
+
+    if (name === "design" || name === "desain") {
+        return "design";
+    }
+
+    if (name === "building" || name === "buildings") {
+        return "buildings";
+    }
+
+    const compactName = name.replace(/[^a-z0-9]/g, "");
+
+    if (
+        compactName.includes("pbg") &&
+        compactName.includes("slf")
+    ) {
+        return "pbg-slf";
+    }
+
+    return null;
+}
 
 function normalizeDashboard(
     data: ApiDashboard | null
@@ -85,6 +121,9 @@ function normalizeProjects(
 
 export default function Home() {
     const navigate = useNavigate();
+        
+    const [productCatalog, setProductCatalog] =
+        useState<ApiProduct[]>([]);
     
     useEffect(() => {
         updatePageSeo({
@@ -125,9 +164,11 @@ export default function Home() {
                 const [
                     dashboardData,
                     projectData,
+                    productData,
                 ] = await Promise.all([
                     getDashboard(),
                     getProjects(),
+                    getProducts(),
                 ]);
 
                 if (!active) {
@@ -141,6 +182,9 @@ export default function Home() {
                 setProjects(
                     normalizeProjects(projectData)
                 );
+                
+                setProductCatalog(productData);
+                
             } catch (reason) {
                 if (!active) {
                     return;
@@ -167,17 +211,31 @@ export default function Home() {
 
     const homeProjects = projects.slice(0, 4);
 
-    const galleryImages = projects.flatMap((project) =>
-        project.thumbnail_url
-            ? [
-                {
-                    id: project.id,
-                    image_url: project.thumbnail_url,
-                    projectTitle: project.title,
-                },
-            ]
-            : []
-    );
+    const galleryImages = projects.flatMap((project) => {
+        if (!project.thumbnail_url) {
+            return [];
+        }
+
+        const productId = Number(
+            project.id_product ?? project.product?.id
+        );
+
+        const product = productCatalog.find(
+            (item) => Number(item.id) === productId
+        );
+
+        return [
+            {
+                id: project.id,
+                image_url: project.thumbnail_url,
+                projectTitle: project.title,
+                categorySlug: getProjectCategorySlug(
+                    product?.name_product
+                ),
+            },
+        ];
+    });
+
     const visibleGalleryImages = showAllGallery
         ? galleryImages
         : galleryImages.slice(0, 8);
@@ -520,22 +578,40 @@ export default function Home() {
                     </div>
 
                     <div className="gallery-grid">
-                        {visibleGalleryImages.map(
-                            (image, index) => (
-                                <button
-                                    className={`gallery-item gallery-${(index % 8) + 1}`}
-                                    onClick={() =>
-                                        navigate("/works")
-                                    }
+                        {visibleGalleryImages.map((image, index) => {
+                            const itemClass = `gallery-item gallery-${(index % 8) + 1}`;
+
+                            const imageContent = (
+                                <img
+                                    src={image.image_url}
+                                    alt={`${image.projectTitle} - AR4N Group`}
+                                />
+                            );
+
+                            if (!image.categorySlug) {
+                                return (
+                                    <button
+                                        type="button"
+                                        className={itemClass}
+                                        onClick={() => navigate("/works")}
+                                        key={image.id}
+                                    >
+                                        {imageContent}
+                                    </button>
+                                );
+                            }
+
+                            return (
+                                <Link
+                                    className={itemClass}
+                                    to={`/projects/${image.categorySlug}/${image.id}`}
                                     key={image.id}
+                                    aria-label={`Lihat detail proyek ${image.projectTitle}`}
                                 >
-                                    <img
-                                        src={image.image_url}
-                                        alt={`${image.projectTitle} project detail`}
-                                    />
-                                </button>
-                            )
-                        )}
+                                    {imageContent}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {galleryImages.length === 0 && (

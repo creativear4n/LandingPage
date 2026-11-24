@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
 import { updatePageSeo } from "../utils/seo";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, Plus } from "lucide-react";
 import Header from "../components/layout/Header";
 import MainLayout from "../components/layout/MainLayout";
 import ProjectModal from "../components/projects/ProjectModal";
 import {
     getDashboard,
-    getProducts,
     getProjects,
     getImageUrl,
 } from "../services/api";
 import type {
     ApiDashboard,
-    ApiProduct,
     ApiProjectsResponse,
     Dashboard,
     Project,
@@ -27,43 +25,9 @@ const images = {
 };
 
 type HomeProject = Project & {
-    id_product?: number | null;
-    product?: {
-        id?: number | null;
-    } | null;
     thumbnail_path?: string | null;
     thumbnail_url?: string | null;
 };
-
-type ProjectCategorySlug = "design" | "buildings" | "pbg-slf";
-
-function getProjectCategorySlug(
-    productName?: string | null
-): ProjectCategorySlug | null {
-    const name = (productName ?? "")
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, " ");
-
-    if (name === "design" || name === "desain") {
-        return "design";
-    }
-
-    if (name === "building" || name === "buildings") {
-        return "buildings";
-    }
-
-    const compactName = name.replace(/[^a-z0-9]/g, "");
-
-    if (
-        compactName.includes("pbg") &&
-        compactName.includes("slf")
-    ) {
-        return "pbg-slf";
-    }
-
-    return null;
-}
 
 function normalizeDashboard(
     data: ApiDashboard | null
@@ -121,10 +85,7 @@ function normalizeProjects(
 
 export default function Home() {
     const navigate = useNavigate();
-        
-    const [productCatalog, setProductCatalog] =
-        useState<ApiProduct[]>([]);
-    
+            
     useEffect(() => {
         updatePageSeo({
             title: "AR4N Group | Jasa Arsitek, Interior & Design Build Cirebon",
@@ -164,11 +125,9 @@ export default function Home() {
                 const [
                     dashboardData,
                     projectData,
-                    productData,
                 ] = await Promise.all([
                     getDashboard(),
                     getProjects(),
-                    getProducts(),
                 ]);
 
                 if (!active) {
@@ -182,8 +141,6 @@ export default function Home() {
                 setProjects(
                     normalizeProjects(projectData)
                 );
-                
-                setProductCatalog(productData);
                 
             } catch (reason) {
                 if (!active) {
@@ -216,22 +173,12 @@ export default function Home() {
             return [];
         }
 
-        const productId = Number(
-            project.id_product ?? project.product?.id
-        );
-
-        const product = productCatalog.find(
-            (item) => Number(item.id) === productId
-        );
-
         return [
             {
                 id: project.id,
                 image_url: project.thumbnail_url,
                 projectTitle: project.title,
-                categorySlug: getProjectCategorySlug(
-                    product?.name_product
-                ),
+                project,
             },
         ];
     });
@@ -493,15 +440,6 @@ export default function Home() {
                         )}
                     </div>
                 </div>
-
-                {selectedProject && (
-                    <ProjectModal
-                        project={selectedProject}
-                        onClose={() =>
-                            setSelectedProject(null)
-                        }
-                    />
-                )}
             </section>
 
             <section className="feature section-pad">
@@ -581,36 +519,19 @@ export default function Home() {
                         {visibleGalleryImages.map((image, index) => {
                             const itemClass = `gallery-item gallery-${(index % 8) + 1}`;
 
-                            const imageContent = (
-                                <img
-                                    src={image.image_url}
-                                    alt={`${image.projectTitle} - AR4N Group`}
-                                />
-                            );
-
-                            if (!image.categorySlug) {
-                                return (
-                                    <button
-                                        type="button"
-                                        className={itemClass}
-                                        onClick={() => navigate("/works")}
-                                        key={image.id}
-                                    >
-                                        {imageContent}
-                                    </button>
-                                );
-                            }
-
                             return (
-                                <Link
+                                <button
+                                    type="button"
                                     className={itemClass}
-                                    to={`/projects/${image.categorySlug}/${image.id}`}
-                                    state={{ from: "home" }}
+                                    onClick={() => setSelectedProject(image.project)}
                                     key={image.id}
                                     aria-label={`Lihat detail proyek ${image.projectTitle}`}
                                 >
-                                    {imageContent}
-                                </Link>
+                                    <img
+                                        src={image.image_url}
+                                        alt={`${image.projectTitle} - AR4N Group`}
+                                    />
+                                </button>
                             );
                         })}
                     </div>
@@ -642,6 +563,15 @@ export default function Home() {
                     )}
                 </div>
             </section>
+            
+                {selectedProject && (
+                    <ProjectModal
+                        project={selectedProject}
+                        onClose={() =>
+                            setSelectedProject(null)
+                        }
+                    />
+                )}
         </MainLayout>
     );
 }

@@ -7662,3 +7662,207 @@ html.about-reveal-ready
         right: 5px;
     }
 }
+
+.project-modal-footer .project-modal-back {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: auto;
+    white-space: nowrap;
+}
+
+.project-modal-footer .project-modal-back svg {
+    display: block;
+    flex-shrink: 0;
+}
+
+.projects-page-axiom .projects-listing.page-width {
+    padding: 80px 0 55px;
+}
+
+/* Heading halaman */
+.projects-page-axiom .projects-listing-heading {
+    gap: 14px 24px;
+    margin-bottom: 42px;
+    padding-bottom: 28px;
+}
+
+.projects-page-axiom .projects-listing-heading h1 {
+    grid-column: 1 / 8;
+    font-size: clamp(48px, 6vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.065em;
+}
+
+.projects-page-axiom .projects-listing-description {
+    grid-column: 8 / 13;
+    grid-row: 2;
+    margin: 0;
+    max-width: 440px;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+}
+
+.projects-page-axiom .projects-count {
+    grid-column: 8 / 13;
+    grid-row: 3;
+}
+
+/* Grid proyek */
+.projects-page-axiom .projects-list-grid-standard {
+    gap: 22px;
+}
+
+.projects-page-axiom .projects-list-grid-standard
+.projects-list-card:nth-child(n) {
+    grid-column: span 6;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Samakan ukuran gambar seluruh kartu */
+.projects-page-axiom .projects-list-grid-standard
+.projects-list-card:nth-child(n) .projects-list-image {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1.4;
+}
+
+/* Samakan area informasi kartu */
+.projects-page-axiom .projects-list-grid-standard
+.projects-list-card:nth-child(n) .projects-list-meta {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) 38px;
+    align-items: center;
+    gap: 9px 12px;
+    min-height: 135px;
+    padding: 20px;
+}
+
+/* Nomor proyek */
+.projects-page-axiom .projects-list-grid-standard
+.projects-list-meta > span {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    margin: 0;
+}
+
+.projects-page-axiom .projects-list-grid-standard
+.projects-list-meta h2 {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.25;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+/* Cuplikan deskripsi */
+.projects-page-axiom .projects-list-excerpt {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    margin: 0;
+
+    color: #929b96;
+    font-size: 12px;
+    line-height: 1.5;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+/* Panah detail */
+.projects-page-axiom .projects-list-grid-standard
+.projects-list-meta .projects-list-arrow {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    width: 38px;
+    height: 38px;
+    margin: 0;
+    padding: 10px;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 650px) {
+    .projects-page-axiom .projects-listing.page-width {
+        width: calc(100% - 36px);
+        padding: 50px 0 42px;
+    }
+
+    .projects-page-axiom .projects-listing-heading {
+        grid-template-columns: 1fr;
+        gap: 13px;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+    }
+
+    .projects-page-axiom .projects-listing-heading h1 {
+        grid-column: 1;
+        grid-row: auto;
+        font-size: clamp(34px, 10vw, 48px);
+    }
+
+    .projects-page-axiom .projects-listing-description,
+    .projects-page-axiom .projects-count {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .projects-page-axiom .projects-listing-description {
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .projects-page-axiom .projects-list-grid-standard {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .projects-page-axiom .projects-list-grid-standard
+    .projects-list-card:nth-child(n) {
+        grid-column: 1 / -1;
+    }
+
+    .projects-page-axiom .projects-list-grid-standard
+    .projects-list-card:nth-child(n) .projects-list-image {
+        aspect-ratio: 1.55;
+    }
+
+    .projects-page-axiom .projects-list-grid-standard
+    .projects-list-card:nth-child(n) .projects-list-meta {
+        grid-template-columns: 26px minmax(0, 1fr) 36px;
+        min-height: 112px;
+        padding: 16px;
+        gap: 8px 10px;
+    }
+
+    .projects-page-axiom .projects-list-grid-standard
+    .projects-list-meta h2 {
+        font-size: 17px;
+    }
+
+    .projects-page-axiom .projects-list-excerpt {
+        font-size: 11.5px;
+    }
+}

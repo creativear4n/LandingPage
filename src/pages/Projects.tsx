@@ -1348,6 +1348,12 @@ function ProjectModal({
 
                             <h2>{project.title}</h2>
 
+                            {!isPbgProject && project.description?.trim() && (
+                                <p className="projects-list-excerpt">
+                                    {project.description.trim()}
+                                </p>
+                            )}
+
                             {isPbgProject && workArea && (
                                 <p className="project-modal-area">
                                     Luasan Bangunan yang dibuat PBG/SLF:{" "}

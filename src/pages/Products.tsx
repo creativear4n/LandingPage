@@ -2021,10 +2021,10 @@ export default function Products() {
                     <div className="inner-hero-shade" />
                     <h1>
                         {productSlug === "design"
-                            ? "Jasa Arsitek & Desain Interior Cirebon"
+                            ? "Design"
                             : productSlug === "buildings"
-                                ? "Jasa Kontraktor Cirebon"
-                                : "Pengurusan PBG & SLF Cirebon"}
+                                ? "Buildings"
+                                : "PBG & SLF"}
                     </h1>
                 </section>
                 <section className="products-dark-section">

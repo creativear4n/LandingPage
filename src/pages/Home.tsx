@@ -290,7 +290,7 @@ export default function Home() {
                         01 / About us
                     </p>
 
-                    <h2>
+                    <h2 className="home-about-title">
                         {dashboard?.title_about ||
                             "Design & Building Terpercaya di Cirebon"}
                     </h2>

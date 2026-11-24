@@ -125,6 +125,7 @@ type ProjectData = {
     sort_order: number;
     work_area?: number | string | null;
     is_pbg?: boolean;
+    thumbnail_path?: string | null;
 
     images: {
         id: number;
@@ -241,6 +242,8 @@ function normalizeProject(
             project.thumbnail_url ||
             project.thumbnail_path
         ),
+
+        thumbnail_path: project.thumbnail_path ?? null,
 
         sort_order: project.sort_order ?? 0,
 
@@ -1070,6 +1073,92 @@ export function ProjectDetail() {
     );
 }
 
+type GalleryTileLayout = {
+    columns: number;
+    rows: number;
+};
+
+const PROJECT_GALLERY_LAYOUTS: Record<
+    number,
+    GalleryTileLayout[]
+> = {
+    1: [
+        { columns: 12, rows: 3 },
+    ],
+
+    2: [
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+    ],
+
+    3: [
+        { columns: 7, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 12, rows: 2 },
+    ],
+
+    4: [
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+    ],
+
+    5: [
+        { columns: 7, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 7, rows: 2 },
+        { columns: 12, rows: 2 },
+    ],
+
+    6: [
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+    ],
+
+    7: [
+        { columns: 7, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 7, rows: 2 },
+        { columns: 4, rows: 2 },
+        { columns: 4, rows: 2 },
+        { columns: 4, rows: 2 },
+    ],
+
+    8: [
+        { columns: 5, rows: 3 },
+        { columns: 4, rows: 2 },
+        { columns: 3, rows: 2 },
+        { columns: 4, rows: 2 },
+        { columns: 3, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 7, rows: 3 },
+        { columns: 5, rows: 2 },
+    ],
+};
+
+function getProjectGalleryLayout(
+    count: number
+): GalleryTileLayout[] {
+    const result: GalleryTileLayout[] = [];
+
+    for (let start = 0; start < count; start += 8) {
+        const groupCount = Math.min(8, count - start);
+
+        result.push(
+            ...PROJECT_GALLERY_LAYOUTS[groupCount]
+        );
+    }
+
+    return result;
+}
+
 function ProjectModal({
     project,
     categoryTitle,
@@ -1079,50 +1168,66 @@ function ProjectModal({
     categoryTitle: string;
     onClose: () => void;
 }) {
-    const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+    
+    const [lightboxIndex, setLightboxIndex] =
+        useState<number | null>(null);
 
     const isPbgProject = project.is_pbg === true;
 
-    const orderedImages = [...project.images]
+    const sortedImages = [...project.images]
         .filter((image) => image.image_url)
         .sort((a, b) => a.sort_order - b.sort_order)
         .slice(0, 20);
 
     const mainImage =
         project.thumbnail_url ||
-        orderedImages[0]?.image_url ||
+        sortedImages[0]?.image_url ||
         null;
 
     const galleryImages = isPbgProject
         ? []
-        : orderedImages.filter(
+        : sortedImages.filter(
               (image) => image.image_url !== mainImage
           );
 
+    const galleryLayout = getProjectGalleryLayout(
+        galleryImages.length
+    );
+
+    const mainImagePath =
+    project.thumbnail_path ||
+    sortedImages.find(
+        (image) => image.image_url === mainImage
+    )?.image_path ||
+    null;
+
+    const galleryLightboxOffset =
+        !isPbgProject && mainImage ? 1 : 0;
+
     const lightboxImages = [
-        ...(mainImage
+        ...(!isPbgProject && mainImage
             ? [
-                  {
-                      src: mainImage,
-                      alt: project.title,
-                  },
-              ]
+                {
+                    src: getCmsMediaUrl(mainImagePath) ?? mainImage,
+                    alt: `${project.title} - Featured Photo`,
+                },
+            ]
             : []),
 
         ...galleryImages.map((image, index) => ({
-            src: image.image_url,
-            alt: `${project.title} - Photo ${index + 1}`,
+            src: getCmsMediaUrl(image.image_path) ?? image.image_url,
+            alt: `${project.title} - Photo ${index + 2}`,
         })),
     ];
 
     const activeLightboxImage =
-        lightboxIndex !== null
-            ? lightboxImages[lightboxIndex] ?? null
-            : null;
+    lightboxIndex !== null
+        ? lightboxImages[lightboxIndex] ?? null
+        : null;
 
     const workArea = formatWorkArea(project.work_area);
 
-    // Lock background scrolling while project detail is open.
+    // Lock background scrolling while the modal is open.
     useEffect(() => {
         const previousOverflow = document.body.style.overflow;
 
@@ -1133,7 +1238,7 @@ function ProjectModal({
         };
     }, []);
 
-    // Keyboard navigation for modal and image preview.
+    // Keyboard navigation for image preview.
     useEffect(() => {
         const handleKeyboard = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
@@ -1171,12 +1276,13 @@ function ProjectModal({
             }
         };
 
-        document.addEventListener("keydown", handleKeyboard);
+        window.addEventListener("keydown", handleKeyboard);
 
         return () => {
-            document.removeEventListener("keydown", handleKeyboard);
+            window.removeEventListener("keydown", handleKeyboard);
         };
     }, [lightboxIndex, lightboxImages.length, onClose]);
+
 
     const showPreviousImage = () => {
         setLightboxIndex((current) => {
@@ -1199,6 +1305,9 @@ function ProjectModal({
             return (current + 1) % lightboxImages.length;
         });
     };
+
+    const canZoomMainImage =
+       !isPbgProject && Boolean(mainImage);
 
     return (
         <div
@@ -1257,24 +1366,23 @@ function ProjectModal({
                         <div
                             className={`project-modal-featured ${
                                 isPbgProject ? "is-pbg" : ""
-                            } ${mainImage ? "is-zoomable" : ""}`}
-                            role={mainImage ? "button" : undefined}
-                            tabIndex={mainImage ? 0 : undefined}
+                            } ${canZoomMainImage ? "is-zoomable" : ""}`}
+                            role={canZoomMainImage ? "button" : undefined}
+                            tabIndex={canZoomMainImage ? 0 : undefined}
                             aria-label={
-                                mainImage
+                                canZoomMainImage
                                     ? `Perbesar foto utama ${project.title}`
                                     : undefined
                             }
                             onClick={() => {
-                                if (mainImage) {
+                                if (canZoomMainImage) {
                                     setLightboxIndex(0);
                                 }
                             }}
                             onKeyDown={(event) => {
                                 if (
-                                    mainImage &&
-                                    (event.key === "Enter" ||
-                                        event.key === " ")
+                                    canZoomMainImage &&
+                                    (event.key === "Enter" || event.key === " ")
                                 ) {
                                     event.preventDefault();
                                     setLightboxIndex(0);
@@ -1322,34 +1430,27 @@ function ProjectModal({
                             </div>
 
                             {galleryImages.length > 0 ? (
-                                <div className="project-modal-gallery-grid">
+                                <div className="project-modal-gallery-grid"> 
                                     {galleryImages.map((image, index) => {
-                                        const imageNumber = String(
-                                            index + 1
-                                        ).padStart(2, "0");
+                                        const tile = galleryLayout[index];
 
-                                        const imageClass =
-                                            `gallery-${(index % 8) + 1}`;
-
-                                        const imageIndex = mainImage
-                                            ? index + 1
-                                            : index;
+                                        const photoNumber =
+                                            index + galleryLightboxOffset + 1;
 
                                         return (
                                             <figure
-                                                className={`project-modal-gallery-item ${imageClass}`}
+                                                className="project-modal-gallery-item"
                                                 key={image.id}
                                                 role="button"
                                                 tabIndex={0}
-                                                aria-label={`Lihat foto ${imageNumber} ukuran besar`}
+                                                aria-label={`Perbesar foto ${photoNumber}`}
                                                 style={{
-                                                    animationDelay: `${Math.min(
-                                                        index * 70,
-                                                        700
-                                                    )}ms`,
+                                                    gridColumn: `span ${tile.columns}`,
+                                                    gridRow: `span ${tile.rows}`,
+                                                    animationDelay: `${Math.min(index * 70, 700)}ms`,
                                                 }}
                                                 onClick={() =>
-                                                    setLightboxIndex(imageIndex)
+                                                    setLightboxIndex(index + galleryLightboxOffset)
                                                 }
                                                 onKeyDown={(event) => {
                                                     if (
@@ -1357,26 +1458,27 @@ function ProjectModal({
                                                         event.key === " "
                                                     ) {
                                                         event.preventDefault();
-                                                        setLightboxIndex(
-                                                            imageIndex
-                                                        );
+                                                        setLightboxIndex(index + galleryLightboxOffset);
                                                     }
                                                 }}
                                             >
                                                 <img
                                                     src={image.image_url}
-                                                    alt={`${project.title} - Photo ${index + 1}`}
+                                                    alt={`${project.title} - Photo ${photoNumber}`}
                                                     loading="lazy"
                                                     decoding="async"
                                                 />
 
                                                 <figcaption>
-                                                    <span>{imageNumber}</span>
+                                                    <span>
+                                                        {String(photoNumber).padStart(2, "0")}
+                                                    </span>
                                                     <ArrowUpRight size={17} />
                                                 </figcaption>
                                             </figure>
                                         );
                                     })}
+
                                 </div>
                             ) : (
                                 <div className="project-modal-gallery-empty">
@@ -1463,3 +1565,5 @@ function ProjectModal({
         </div>
     );
 }
+
+

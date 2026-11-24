@@ -180,6 +180,7 @@ type ProductScopeItem = {
     icon: LucideIcon;
 };
 
+
 const productSeo: Record<
     ProductSlug,
     {
@@ -188,15 +189,15 @@ const productSeo: Record<
     }
 > = {
     design: {
-        title: "AR4N Group | Products | Design Arsitektur",
+        title: "Jasa Arsitek & Desain Interior Cirebon | AR4N Group",
         description:
-            "Layanan desain arsitektur dan interior untuk hunian maupun bangunan komersial. Meliputi konsep desain, visualisasi 3D, gambar kerja, dan perencanaan RAB di Cirebon.",
+            "AR4N Group menyediakan jasa arsitek dan desain interior di Cirebon untuk hunian dan bangunan komersial, mulai dari konsultasi, konsep desain, visualisasi 3D, hingga gambar kerja dan perencanaan RAB.",
     },
 
     buildings: {
-        title: "AR4N Group | Products | Jasa Kontraktor & Design Build",
+        title: "Jasa Kontraktor Cirebon & Design Build | AR4N Group",
         description:
-            "Layanan pembangunan dan renovasi bangunan, interior, fit-out, serta furniture custom. AR4N Group menghadirkan solusi design & build di Cirebon.",
+            "AR4N Group melayani jasa kontraktor di Cirebon untuk pembangunan dan renovasi rumah serta bangunan komersial, termasuk pekerjaan interior dan design & build.",
     },
 
     "pbg-slf": {
@@ -218,13 +219,13 @@ const productDescriptions: Record<
         label: "DESIGN",
         title: "Desain Arsitektur untuk Ruang dan Bangunan Impian",
         description:
-            "Wujudkan bangunan impian melalui layanan desain arsitektur profesional yang mengutamakan estetika, fungsi, dan kenyamanan. Kami menghadirkan solusi perencanaan arsitektur mulai dari konsep desain, tata ruang, hingga pengembangan detail bangunan yang disesuaikan dengan kebutuhan dan karakter Anda. Setiap desain dirancang secara matang untuk menghasilkan ruang yang tidak hanya menarik secara visual, tetapi juga fungsional, efisien, dan siap direalisasikan.",
+            "AR4N Group menyediakan jasa arsitek dan desain interior di Cirebon untuk merencanakan hunian maupun bangunan komersial. Layanan mencakup konsultasi kebutuhan, konsep arsitektur, tata ruang, visualisasi 3D, gambar kerja, dan perencanaan RAB. Setiap rancangan disusun dengan mempertimbangkan fungsi, estetika, kenyamanan, karakter ruang, dan kebutuhan pelaksanaan bangunan.",
     },
     buildings: {
         label: "BUILDINGS",
         title: "Konstruksi Bangunan Berkualitas, dari Rencana hingga Realisasi",
         description:
-            "Dari perencanaan hingga pembangunan, AR4N GROUP melalui layanan jasa konstruksi bangunan yang mengutamakan kualitas, ketepatan, dan standar pengerjaan profesional. Kami menangani pembangunan rumah tinggal, bangunan komersial, hingga proyek konstruksi lainnya dengan proses kerja yang terencana, pengawasan yang terarah, serta perhatian terhadap setiap detail. Dari tahap persiapan hingga penyelesaian, kami berkomitmen menghadirkan bangunan yang fungsional, kokoh, dan sesuai dengan kebutuhan Anda.",
+            "AR4N Group melayani jasa kontraktor di Cirebon untuk pembangunan rumah tinggal, bangunan komersial, dan pekerjaan renovasi. Layanan design & build mencakup pelaksanaan konstruksi, penataan interior, fit-out, serta furniture custom. Setiap pekerjaan dilakukan melalui proses yang terencana dengan memperhatikan kebutuhan proyek, kualitas material, pengawasan, dan detail penyelesaian bangunan.",
     },
     "pbg-slf": {
         label: "PBG",
@@ -1341,10 +1342,13 @@ function ProductExplanation({
         <section className="products-explanation-section page-width">
             <div className="products-explanation-heading">
                 <p>OUR SERVICES</p>
-                <h2>Explore Our Services</h2>
+                <h2>{service.title}</h2>
                 <span>
-                    Kenali layanan dan proses pekerjaan
-                    yang kami tawarkan.
+                    {slug === "design"
+                        ? "Layanan jasa arsitek dan desain interior untuk hunian serta bangunan komersial, mulai dari konsultasi hingga gambar kerja."
+                        : slug === "buildings"
+                            ? "Layanan kontraktor untuk pembangunan, renovasi, interior, dan penyelesaian bangunan."
+                            : "Pendampingan pengurusan legalitas dan kelayakan fungsi bangunan melalui layanan PBG dan SLF."}
                 </span>
             </div>
             <div className="products-explanation-groups">
@@ -2015,7 +2019,13 @@ export default function Products() {
                         />
                     )}
                     <div className="inner-hero-shade" />
-                    <h1>Our Works</h1>
+                    <h1>
+                        {productSlug === "design"
+                            ? "Jasa Arsitek & Desain Interior Cirebon"
+                            : productSlug === "buildings"
+                                ? "Jasa Kontraktor Cirebon"
+                                : "Pengurusan PBG & SLF Cirebon"}
+                    </h1>
                 </section>
                 <section className="products-dark-section">
                     <section className="products-project-section page-width">

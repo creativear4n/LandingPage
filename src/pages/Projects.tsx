@@ -473,9 +473,21 @@ export default function Projects({
             return;
         }
 
+        const categoryTitle = projectCategories[category].title;
+
         updatePageSeo({
             ...projectSeo[category],
             path: `/projects/${category}`,
+            breadcrumbs: [
+                {
+                    name: "Home",
+                    path: "/",
+                },
+                {
+                    name: `${categoryTitle} Projects`,
+                    path: `/projects/${category}`,
+                },
+            ],
         });
     }, [category, manageSeo]);
 
@@ -900,6 +912,24 @@ export function ProjectDetail() {
             imageAlt: project
                 ? `${project.title} - AR4N Group`
                 : undefined,
+
+            breadcrumbs:
+                hasValidProject && project && categoryConfig
+                    ? [
+                        {
+                            name: "Home",
+                            path: "/",
+                        },
+                        {
+                            name: `${categoryConfig.title} Projects`,
+                            path: `/projects/${category}`,
+                        },
+                        {
+                            name: project.title,
+                            path: `/projects/${category}/${projectId}`,
+                        },
+                    ]
+                    : [],
         });
     }, [category, projectId, project, categoryConfig]);
 

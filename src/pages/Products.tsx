@@ -1822,12 +1822,29 @@ export default function Products() {
             return;
         }
 
+        const breadcrumbNames: Record<ProductSlug, string> = {
+            design: "Design",
+            buildings: "Buildings",
+            "pbg-slf": "PBG & SLF",
+        };
+
         updatePageSeo({
             title: seo.title,
             description: seo.description,
-            path: window.location.pathname,
+            path: `/products/${productSlug}`,
+            breadcrumbs: [
+                {
+                    name: "Home",
+                    path: "/",
+                },
+                {
+                    name: breadcrumbNames[productSlug],
+                    path: `/products/${productSlug}`,
+                },
+            ],
         });
     }, [productSlug]);
+    
     useEffect(() => {
         function updateCarouselStep() {
             if (window.innerWidth <= 640) {

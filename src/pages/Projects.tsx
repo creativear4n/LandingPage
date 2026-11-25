@@ -1367,7 +1367,7 @@ function ProjectModal({
                 <div className="project-modal-content">
                     {/* PROJECT HEADER */}
                     <div className="project-modal-hero">
-                        <div className="project-modal-info">
+                        <div className="project-modal-information">
                             <p className="project-modal-kicker">
                                 {isPbgProject
                                     ? "COMPANY / PROJECT INFORMATION"

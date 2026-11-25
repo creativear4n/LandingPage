@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { X, ArrowUpRight } from "lucide-react";
+import { X } from "lucide-react";
 import type { Project } from "../../types";
 
 interface ProjectModalProps {
@@ -116,30 +116,21 @@ export default function ProjectModal({
                         </div>
                     </section>
 
-                    <section className="project-modal-gallery">
-                        <div className="project-modal-gallery-heading">
+                    <section className="project-modal-home-gallery">
+                        <div className="project-modal-home-gallery-heading">
                             <div>
-                                <p>SELECTED PHOTOGRAPHY</p>
                                 <h3>Project Gallery</h3>
                             </div>
 
-                            <span>
-                                {sortedImages.length} / 20 Photos
-                            </span>
+                            <span>{sortedImages.length} / 20 Photos</span>
                         </div>
 
                         {galleryImages.length > 0 ? (
-                            <div className="project-modal-gallery-grid">
+                            <div className="project-modal-home-gallery-grid">
                                 {galleryImages.map((image, index) => (
                                     <figure
-                                        className="project-modal-gallery-item"
+                                        className="project-modal-home-gallery-item"
                                         key={image.id}
-                                        style={{
-                                            animationDelay: `${Math.min(
-                                                index * 70,
-                                                700
-                                            )}ms`,
-                                        }}
                                     >
                                         <img
                                             src={image.image_url}
@@ -147,17 +138,6 @@ export default function ProjectModal({
                                             loading="lazy"
                                             decoding="async"
                                         />
-
-                                        <figcaption>
-                                            <span>
-                                                {String(index + 2).padStart(
-                                                    2,
-                                                    "0"
-                                                )}
-                                            </span>
-
-                                            <ArrowUpRight size={17} />
-                                        </figcaption>
                                     </figure>
                                 ))}
                             </div>

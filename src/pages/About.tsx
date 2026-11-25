@@ -535,12 +535,32 @@ export default function About() {
 
     useEffect(() => {
         updatePageSeo({
-            title: "Tentang AR4N Group | Jasa Arsitektur & Design Build Cirebon",
+            title: "Tentang AR4N Group | Jasa Arsitektur, Interior & Konstruksi Cirebon",
+
             description:
-                "Kenali AR4N Group, penyedia layanan arsitektur, desain interior, design & build, serta konstruksi untuk hunian dan bangunan komersial di Cirebon.",
+                "Kenali AR4N Group, perusahaan jasa arsitektur, desain interior, design & build, konstruksi, serta pendampingan PBG dan SLF di Cirebon.",
+
             path: "/about",
+
+            image: "/assets/thumbnail1.png",
+
+            imageAlt:
+                "Profil AR4N Group - Jasa Arsitektur, Interior dan Design Build Cirebon",
+
             robots: "index,follow",
+
+            breadcrumbs: [
+                {
+                    name: "Home",
+                    path: "/",
+                },
+                {
+                    name: "About Us",
+                    path: "/about",
+                },
+            ],
         });
+
         let active = true;
 
         async function loadAboutPage() {

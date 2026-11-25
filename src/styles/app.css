@@ -7103,8 +7103,8 @@ html.about-reveal-ready
 }
 
 .profile-block {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
-    gap: clamp(32px, 4.5vw, 60px);
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    gap: clamp(36px, 4vw, 56px);
     align-items: center;
 }
 
@@ -7112,9 +7112,8 @@ html.about-reveal-ready
     display: block;
     width: 100%;
     max-width: 100%;
-    height: auto;
-    max-height: none;
-    object-fit: contain;
+    height: clamp(300px, 28vw, 360px);
+    object-fit: cover;
     object-position: center;
     background: transparent;
     border-radius: 3px;
@@ -7122,16 +7121,25 @@ html.about-reveal-ready
 
 .profile-block > div {
     min-width: 0;
-    max-width: 620px;
+    max-width: 680px;
+}
+
+.profile-block > div .lined-title {
+    font-size: clamp(28px, 2.5vw, 34px);
+    margin-bottom: 24px;
 }
 
 .profile-block h3 {
-    font-size: 23px;
-    margin-bottom: 18px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(21px, 1.8vw, 25px);
+    font-weight: 500;
+    line-height: 1.35;
+    margin: 0 0 18px;
 }
 
-.profile-block p {
-    font-size: 14px;
+.profile-block > div p {
+    color: rgba(241, 238, 232, 0.72);
+    font-size: clamp(14px, 1vw, 15px);
     line-height: 1.85;
 }
 

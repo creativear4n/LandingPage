@@ -1231,12 +1231,12 @@ button {
 .profile-block > img {
     display: block;
     width: 100%;
-    height: auto;
-    max-height: none;
-    object-fit: contain;
+    max-width: 100%;
+    height: clamp(300px, 28vw, 360px);
+    object-fit: cover;
     object-position: center;
+    background: transparent;
     border-radius: 3px;
-    background: #222220;
 }
 
 .profile-block h3 {
@@ -7170,7 +7170,6 @@ html.about-reveal-ready
         max-width: none;
     }
 }
-
 
 @media (prefers-reduced-motion: reduce) {
     .about-profile-motion .profile-block > img,

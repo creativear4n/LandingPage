@@ -1384,7 +1384,7 @@ function ProjectModal({
                             )}
 
                             {project.description?.trim() && (
-                                <p className="projects-list-excerpt">
+                                <p className="project-modal-description">
                                     {project.description.trim()}
                                 </p>
                             )}

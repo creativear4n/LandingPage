@@ -1196,7 +1196,6 @@ function getProjectGalleryLayout(
 
 function ProjectModal({
     project,
-    categoryTitle,
     onClose,
 }: {
     project: ProjectData;
@@ -1368,13 +1367,7 @@ function ProjectModal({
                 <div className="project-modal-content">
                     {/* PROJECT HEADER */}
                     <div className="project-modal-hero">
-                        <div className="project-modal-information">
-                            <div className="project-modal-breadcrumb">
-                                <span>OUR PORTFOLIO</span>
-                                <span>/</span>
-                                <span>{categoryTitle.toUpperCase()}</span>
-                            </div>
-
+                        <div className="project-modal-info">
                             <p className="project-modal-kicker">
                                 {isPbgProject
                                     ? "COMPANY / PROJECT INFORMATION"
@@ -1383,12 +1376,6 @@ function ProjectModal({
 
                             <h2>{project.title}</h2>
 
-                            {!isPbgProject && project.description?.trim() && (
-                                <p className="projects-list-excerpt">
-                                    {project.description.trim()}
-                                </p>
-                            )}
-
                             {isPbgProject && workArea && (
                                 <p className="project-modal-area">
                                     Luasan Bangunan yang dibuat PBG/SLF:{" "}
@@ -1396,9 +1383,9 @@ function ProjectModal({
                                 </p>
                             )}
 
-                            {project.description && (
+                            {project.description?.trim() && (
                                 <p className="project-modal-description">
-                                    {project.description}
+                                    {project.description.trim()}
                                 </p>
                             )}
                         </div>

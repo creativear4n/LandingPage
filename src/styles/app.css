@@ -2410,8 +2410,9 @@ button {
 }
 
 .project-modal-information > h2 {
-    font-size: clamp(2.4rem, 3.2vw, 3rem);
-    line-height: 1.05;
+    font-size: clamp(5rem, 7vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
 }
 
 .project-modal-information > .project-modal-description {
@@ -2421,11 +2422,12 @@ button {
 
 @media (max-width: 640px) {
     .project-modal-information > h2 {
-        font-size: 2.3rem;
+        font-size: 3.8rem;
+        line-height: 0.98;
     }
 
     .project-modal-information > .project-modal-description {
-        font-size: 14px;
+        font-size: 19px;
         line-height: 1.75;
     }
 }

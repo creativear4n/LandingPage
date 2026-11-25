@@ -10,6 +10,85 @@ interface ProjectModalProps {
     onClose: () => void;
 }
 
+type GalleryTileLayout = {
+    columns: number;
+    rows: number;
+};
+
+const PROJECT_GALLERY_LAYOUTS: Record<
+    number,
+    GalleryTileLayout[]
+> = {
+    1: [
+        { columns: 12, rows: 3 },
+    ],
+    2: [
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+    ],
+    3: [
+        { columns: 7, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 12, rows: 2 },
+    ],
+    4: [
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+    ],
+    5: [
+        { columns: 7, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 7, rows: 2 },
+        { columns: 12, rows: 2 },
+    ],
+    6: [
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+        { columns: 6, rows: 2 },
+    ],
+    7: [
+        { columns: 7, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 7, rows: 2 },
+        { columns: 4, rows: 2 },
+        { columns: 4, rows: 2 },
+        { columns: 4, rows: 2 },
+    ],
+    8: [
+        { columns: 5, rows: 3 },
+        { columns: 4, rows: 2 },
+        { columns: 3, rows: 2 },
+        { columns: 4, rows: 2 },
+        { columns: 3, rows: 2 },
+        { columns: 5, rows: 2 },
+        { columns: 7, rows: 3 },
+        { columns: 5, rows: 2 },
+    ],
+};
+
+function getProjectGalleryLayout(
+    count: number
+): GalleryTileLayout[] {
+    const result: GalleryTileLayout[] = [];
+
+    for (let start = 0; start < count; start += 8) {
+        const groupCount = Math.min(8, count - start);
+
+        result.push(
+            ...PROJECT_GALLERY_LAYOUTS[groupCount]
+        );
+    }
+
+    return result;
+}
+
 export default function ProjectModal({
     project,
     onClose,
@@ -41,6 +120,10 @@ export default function ProjectModal({
 
     const galleryImages = sortedImages.filter(
         (image) => image.image_url !== thumbnail
+    );
+
+    const galleryLayout = getProjectGalleryLayout(
+        galleryImages.length
     );
 
     const categoryName =
@@ -116,30 +199,38 @@ export default function ProjectModal({
                         </div>
                     </section>
 
-                    <section className="project-modal-home-gallery">
-                        <div className="project-modal-home-gallery-heading">
+                    <section className="project-modal-gallery">
+                        <div className="project-modal-gallery-heading">
                             <div>
                                 <h3>Project Gallery</h3>
                             </div>
 
-                            <span>{sortedImages.length} / 20 Photos</span>
+                            <span>{galleryImages.length} PHOTOS</span>
                         </div>
 
                         {galleryImages.length > 0 ? (
-                            <div className="project-modal-home-gallery-grid">
-                                {galleryImages.map((image, index) => (
-                                    <figure
-                                        className="project-modal-home-gallery-item"
-                                        key={image.id}
-                                    >
-                                        <img
-                                            src={image.image_url}
-                                            alt={`${project.title} - Photo ${index + 2}`}
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                    </figure>
-                                ))}
+                            <div className="project-modal-gallery-grid">
+                                {galleryImages.map((image, index) => {
+                                    const tile = galleryLayout[index];
+
+                                    return (
+                                        <figure
+                                            className="project-modal-gallery-item"
+                                            key={image.id}
+                                            style={{
+                                                gridColumn: `span ${tile.columns}`,
+                                                gridRow: `span ${tile.rows}`,
+                                            }}
+                                        >
+                                            <img
+                                                src={image.image_url}
+                                                alt={`${project.title} - Photo ${index + 2}`}
+                                                loading="lazy"
+                                                decoding="async"
+                                            />
+                                        </figure>
+                                    );
+                                })}
                             </div>
                         ) : (
                             <div className="project-modal-gallery-empty">

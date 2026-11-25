@@ -502,60 +502,55 @@ export default function Home() {
                     <div className="section-heading">
                         <div>
                             <p className="section-kicker">
-                                04 / In detail
+                                04 / Project documentation
                             </p>
-
-                            <h2>Project gallery</h2>
+                            <h2>Project Gallery</h2>
                         </div>
 
                         <p className="gallery-note">
-                            A collection of spaces
-                            <br />
-                            we&apos;re proud to make.
+                            {galleryImages.length} PHOTOS
                         </p>
                     </div>
 
-                    <div className="gallery-grid">
-                        {visibleGalleryImages.map((image, index) => {
-                            const itemClass = `gallery-item gallery-${(index % 8) + 1}`;
-
-                            return (
+                    {visibleGalleryImages.length > 0 ? (
+                        <div className="gallery-grid">
+                            {visibleGalleryImages.map((image, index) => (
                                 <button
                                     type="button"
-                                    className={itemClass}
-                                    onClick={() => setSelectedProject(image.project)}
+                                    className={`gallery-item gallery-${(index % 8) + 1}`}
                                     key={image.id}
-                                    aria-label={`Lihat detail proyek ${image.projectTitle}`}
+                                    onClick={() =>
+                                        setSelectedProject(image.project)
+                                    }
+                                    aria-label={`View ${image.projectTitle}`}
                                 >
                                     <img
                                         src={image.image_url}
-                                        alt={`${image.projectTitle} - AR4N Group`}
+                                        alt={image.projectTitle}
+                                        loading="lazy"
+                                        decoding="async"
                                     />
                                 </button>
-                            );
-                        })}
-                    </div>
-
-                    {galleryImages.length === 0 && (
-                        <p>
-                            Galeri proyek akan ditampilkan setelah
-                            foto proyek ditambahkan melalui CMS.
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="body-copy">
+                            Belum ada project untuk ditampilkan.
                         </p>
                     )}
 
                     {galleryImages.length > 8 && (
                         <div className="center-action">
                             <button
+                                type="button"
                                 className="outline-button"
                                 onClick={() =>
-                                    setShowAllGallery(
-                                        (previous) => !previous
-                                    )
+                                    setShowAllGallery((current) => !current)
                                 }
                             >
                                 {showAllGallery
-                                    ? "Show less"
-                                    : "View all projects"}
+                                    ? "Show Less"
+                                    : "View More Projects"}
 
                                 <ArrowUpRight size={14} />
                             </button>

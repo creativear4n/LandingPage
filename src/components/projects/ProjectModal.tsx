@@ -48,7 +48,7 @@ export default function ProjectModal({
 
     return (
         <div
-            className="project-modal"
+            className="project-modal project-modal-home"
             role="dialog"
             aria-modal="true"
             aria-label={project.title}
@@ -88,27 +88,7 @@ export default function ProjectModal({
                                     {project.description}
                                 </p>
                             )}
-
-                            <div className="project-modal-meta">
-                                <div>
-                                    <span>PROJECT</span>
-                                    <strong>
-                                        {String(project.id).padStart(2, "0")}
-                                    </strong>
-                                </div>
-
-                                <div>
-                                    <span>CATEGORY</span>
-                                    <strong>{categoryName}</strong>
-                                </div>
-
-                                <div>
-                                    <span>GALLERY</span>
-                                    <strong>
-                                        {sortedImages.length} Photos
-                                    </strong>
-                                </div>
-                            </div>
+                           
                         </div>
 
                         <div className="project-modal-featured">

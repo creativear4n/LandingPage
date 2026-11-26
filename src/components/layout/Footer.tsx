@@ -57,16 +57,6 @@ export default function Footer() {
                             fgColor="#1c1c1a"
                             target="_blank"
                         />
-                        <SocialIcon
-                            url="https://www.instagram.com/ar4n.group/"
-                            style={{
-                                width: 30,
-                                height: 30,
-                            }}
-                            bgColor="#c6a173"
-                            fgColor="#1c1c1a"
-                            target="_blank"
-                        />
                     </div>
                 </div>
             </div>

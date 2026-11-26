@@ -1,5 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useId, useState } from "react";
+import {
+    Link,
+    NavLink,
+    useLocation,
+} from "react-router-dom";
+
+import { useLanguage } from "../../contexts/LanguageContext";
+
 import {
     ChevronDown,
     Menu,
@@ -16,169 +23,308 @@ export type SitePage =
     | "building"
     | "pbg-slf";
 
+type DropdownType = "portfolio" | "products" | null;
+
 export default function Header({
     page,
 }: {
     page: SitePage;
 }) {
-    const navigate = useNavigate();
+    const { language, setLanguage, t } = useLanguage();
+    const location = useLocation();
 
     const [menuOpen, setMenuOpen] = useState(false);
-    const [productMenuOpen, setProductMenuOpen] = useState(false);
-    const [projectMenuOpen, setProjectMenuOpen] = useState(false);
+    const [openDropdown, setOpenDropdown] =
+        useState<DropdownType>(null);
+
+    const navigationId = useId().replace(/:/g, "");
+    const portfolioId = useId().replace(/:/g, "");
+    const productsId = useId().replace(/:/g, "");
 
     const productActive =
         page === "desain" ||
         page === "building" ||
-        page === "pbg-slf";
+        page === "pbg-slf" ||
+        location.pathname.startsWith("/products/");
 
-    const projectActive = page === "works";
+    const projectActive =
+        page === "works" ||
+        location.pathname.startsWith("/projects/");
 
-    function go(path: string) {
-        navigate(path);
+    function closeNavigation() {
         setMenuOpen(false);
-        setProductMenuOpen(false);
-        setProjectMenuOpen(false);
+        setOpenDropdown(null);
     }
+
+    function toggleDropdown(
+        type: Exclude<DropdownType, null>
+    ) {
+        setOpenDropdown((current) =>
+            current === type ? null : type
+        );
+    }
+
+    // Tutup navigasi ketika URL berubah.
+    useEffect(() => {
+        closeNavigation();
+    }, [location.pathname]);
+
+    // Tutup navigasi menggunakan tombol Escape.
+    useEffect(() => {
+        if (!menuOpen && !openDropdown) return;
+
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key === "Escape") {
+                setMenuOpen(false);
+                setOpenDropdown(null);
+            }
+        }
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener(
+                "keydown",
+                handleKeyDown
+            );
+        };
+    }, [menuOpen, openDropdown]);
 
     return (
         <header className="site-header">
-            <button
+            {/* BRAND */}
+            <Link
+                to="/"
                 className="brand-button"
-                onClick={() => go("/")}
-                aria-label="AR4N Group Home"
+                aria-label="AR4N Group - Home"
+                onClick={closeNavigation}
             >
                 <Brand />
-            </button>
+            </Link>
 
+            {/* MOBILE MENU */}
             <button
+                type="button"
                 className="menu-toggle"
-                onClick={() => setMenuOpen((value) => !value)}
-                aria-label="Toggle menu"
+                onClick={() => {
+                    setMenuOpen((current) => !current);
+                    setOpenDropdown(null);
+                }}
+                aria-label={
+                    menuOpen
+                        ? t("closeMenu")
+                        : t("openMenu")
+                }
+                aria-expanded={menuOpen}
+                aria-controls={navigationId}
             >
                 {menuOpen ? (
-                    <X size={20} />
+                    <X size={20} aria-hidden="true" />
                 ) : (
-                    <Menu size={20} />
+                    <Menu size={20} aria-hidden="true" />
                 )}
             </button>
 
+            {/* MAIN NAVIGATION */}
             <nav
+                id={navigationId}
                 className={
                     menuOpen
                         ? "main-nav is-open"
                         : "main-nav"
                 }
+                aria-label={t("navigation")}
             >
-                <button
-                    className={page === "home" ? "active" : ""}
-                    onClick={() => go("/")}
+                <NavLink
+                    to="/"
+                    end
+                    className={({ isActive }) =>
+                        isActive ? "active" : ""
+                    }
+                    onClick={closeNavigation}
                 >
-                    Home
-                </button>
+                    {t("home")}
+                </NavLink>
 
-                <button
-                    className={page === "about" ? "active" : ""}
-                    onClick={() => go("/about")}
+                <NavLink
+                    to="/about"
+                    className={({ isActive }) =>
+                        isActive ? "active" : ""
+                    }
+                    onClick={closeNavigation}
                 >
-                    About
-                </button>
+                    {t("about")}
+                </NavLink>
 
+                {/* PORTFOLIO DROPDOWN */}
                 <div className="product-nav">
                     <button
+                        type="button"
                         className={
                             projectActive
                                 ? "active product-trigger"
                                 : "product-trigger"
                         }
-                        onClick={() => {
-                            setProjectMenuOpen((value) => !value);
-                            setProductMenuOpen(false);
-                        }}
-                        aria-expanded={projectMenuOpen}
+                        onClick={() =>
+                            toggleDropdown("portfolio")
+                        }
+                        aria-expanded={
+                            openDropdown === "portfolio"
+                        }
+                        aria-controls={portfolioId}
                     >
-                        Portofolio
-                        <ChevronDown size={12} />
+                        {t("portfolio")}
+
+                        <ChevronDown
+                            size={12}
+                            aria-hidden="true"
+                        />
                     </button>
 
                     <div
+                        id={portfolioId}
                         className={
-                            projectMenuOpen
+                            openDropdown === "portfolio"
                                 ? "product-dropdown is-open"
                                 : "product-dropdown"
                         }
+                        aria-hidden={
+                            openDropdown !== "portfolio"
+                        }
                     >
-                        <button
-                            onClick={() => go("/projects/design")}
+                        <NavLink
+                            to="/projects/design"
+                            onClick={closeNavigation}
+                            className={({ isActive }) =>
+                                isActive ? "active" : ""
+                            }
                         >
-                            Design
-                        </button>
+                            {t("design")}
+                        </NavLink>
 
-                        <button
-                            onClick={() => go("/projects/buildings")}
+                        <NavLink
+                            to="/projects/buildings"
+                            onClick={closeNavigation}
+                            className={({ isActive }) =>
+                                isActive ? "active" : ""
+                            }
                         >
-                            Buildings
-                        </button>
+                            {t("buildings")}
+                        </NavLink>
 
-                        <button
-                            onClick={() => go("/projects/pbg-slf")}
+                        <NavLink
+                            to="/projects/pbg-slf"
+                            onClick={closeNavigation}
+                            className={({ isActive }) =>
+                                isActive ? "active" : ""
+                            }
                         >
-                            PBG &amp; SLF
-                        </button>
+                            {t("pbgSlf")}
+                        </NavLink>
                     </div>
                 </div>
 
+                {/* PRODUCTS DROPDOWN */}
                 <div className="product-nav">
                     <button
+                        type="button"
                         className={
                             productActive
                                 ? "active product-trigger"
                                 : "product-trigger"
                         }
-                        onClick={() => {
-                            setProductMenuOpen((value) => !value);
-                            setProjectMenuOpen(false);
-                        }}
-                        aria-expanded={productMenuOpen}
+                        onClick={() =>
+                            toggleDropdown("products")
+                        }
+                        aria-expanded={
+                            openDropdown === "products"
+                        }
+                        aria-controls={productsId}
                     >
-                        Our Products
-                        <ChevronDown size={12} />
+                        {t("products")}
+
+                        <ChevronDown
+                            size={12}
+                            aria-hidden="true"
+                        />
                     </button>
 
                     <div
+                        id={productsId}
                         className={
-                            productMenuOpen
+                            openDropdown === "products"
                                 ? "product-dropdown is-open"
                                 : "product-dropdown"
                         }
+                        aria-hidden={
+                            openDropdown !== "products"
+                        }
                     >
-                        <button
-                            onClick={() => go("/products/design")}
+                        <NavLink
+                            to="/products/design"
+                            onClick={closeNavigation}
+                            className={({ isActive }) =>
+                                isActive ? "active" : ""
+                            }
                         >
-                            Design
-                        </button>
+                            {t("design")}
+                        </NavLink>
 
-                        <button
-                            onClick={() => go("/products/buildings")}
+                        <NavLink
+                            to="/products/buildings"
+                            onClick={closeNavigation}
+                            className={({ isActive }) =>
+                                isActive ? "active" : ""
+                            }
                         >
-                            Buildings
-                        </button>
+                            {t("buildings")}
+                        </NavLink>
 
-                        <button
-                            onClick={() => go("/products/pbg-slf")}
+                        <NavLink
+                            to="/products/pbg-slf"
+                            onClick={closeNavigation}
+                            className={({ isActive }) =>
+                                isActive ? "active" : ""
+                            }
                         >
-                            PBG &amp; SLF
-                        </button>
+                            {t("pbgSlf")}
+                        </NavLink>
                     </div>
                 </div>
             </nav>
 
-            <button
+            {/* LANGUAGE SWITCHER */}
+            <div
                 className="language-switcher"
-                type="button"
+                role="group"
+                aria-label={t("language")}
             >
-                EN <span>/</span> ID <ChevronDown size={12} />
-            </button>
+                <button
+                    type="button"
+                    className={
+                        language === "en" ? "is-active" : ""
+                    }
+                    aria-label="English"
+                    aria-pressed={language === "en"}
+                    onClick={() => setLanguage("en")}
+                >
+                    EN
+                </button>
+
+                <span aria-hidden="true">/</span>
+
+                <button
+                    type="button"
+                    className={
+                        language === "id" ? "is-active" : ""
+                    }
+                    aria-label="Bahasa Indonesia"
+                    aria-pressed={language === "id"}
+                    onClick={() => setLanguage("id")}
+                >
+                    ID
+                </button>
+            </div>
         </header>
     );
 }

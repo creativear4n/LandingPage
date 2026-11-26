@@ -15,7 +15,7 @@ export default function MainLayout({
     headerOverlay = false,
 }: MainLayoutProps) {
     return (
-        <main className="site-shell">
+        <div className="site-shell">
             {page !== "home" && (
                 headerOverlay ? (
                     <div className="site-header-overlay">
@@ -26,13 +26,15 @@ export default function MainLayout({
                 )
             )}
 
-            {children}
+            <main id="main-content">
+                {children}
+            </main>
 
             <div id="contact">
                 <Footer />
             </div>
 
             <WhatsAppWidget />
-        </main>
+        </div>
     );
 }

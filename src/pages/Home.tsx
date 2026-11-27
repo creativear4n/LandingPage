@@ -85,7 +85,7 @@ function normalizeProjects(
 
 export default function Home() {
     const navigate = useNavigate();
-            
+    
     useEffect(() => {
         updatePageSeo({
             title: "AR4N Group | Jasa Arsitek, Interior & Design Build Cirebon",
@@ -93,6 +93,7 @@ export default function Home() {
                 "AR4N Group melayani jasa arsitektur, desain interior, design & build, konstruksi, serta pendampingan pengurusan PBG dan SLF di Cirebon.",
             path: window.location.pathname,
             image: "/assets/thumbnail1.png",
+            breadcrumbs: [],
         });
     }, []);
         
@@ -113,6 +114,53 @@ export default function Home() {
 
     const [showAllGallery, setShowAllGallery] =
         useState(false);
+
+    useEffect(() => {
+        if (loading) return;
+
+        const elements = document.querySelectorAll<HTMLElement>(
+            ".home-motion-reveal"
+        );
+
+        if (!elements.length) return;
+
+        if (!("IntersectionObserver" in window)) {
+            elements.forEach((element) =>
+                element.classList.add("is-visible")
+            );
+            return;
+        }
+
+        document.documentElement.classList.add(
+            "home-motion-ready"
+        );
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            {
+                threshold: 0.12,
+                rootMargin: "0px 0px -40px 0px",
+            }
+        );
+
+        elements.forEach((element) =>
+            observer.observe(element)
+        );
+
+        return () => {
+            observer.disconnect();
+            document.documentElement.classList.remove(
+                "home-motion-ready"
+            );
+        };
+    }, [loading]);
 
     useEffect(() => {
         let active = true;
@@ -190,7 +238,7 @@ export default function Home() {
     if (loading) {
         return (
             <MainLayout page="home">
-                <section className="hero">
+                <section className="intro section-pad home-motion-reveal">
                     <img
                         className="hero-image"
                         src={images.hero}
@@ -229,7 +277,7 @@ export default function Home() {
     if (error) {
         return (
             <MainLayout page="home">
-                <section className="page-width section-pad">
+                <section className="intro section-pad home-motion-reveal">
                     <h2>Konten belum dapat dimuat</h2>
 
                     <p>{error}</p>
@@ -300,7 +348,7 @@ export default function Home() {
             </section>
 
             <section
-                className="intro section-pad"
+                className="intro section-pad home-motion-reveal"
                 id="home-about"
             >
                 <div className="page-width narrow-copy">
@@ -353,7 +401,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="work section-pad">
+            <section className="feature section-pad home-motion-reveal">
                 <div className="page-width">
                     <div className="section-heading">
                         <div>
@@ -442,7 +490,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="feature section-pad">
+            <section className="feature section-pad home-motion-reveal">
                 <div className="page-width feature-inner">
                     <div className="feature-image">
                         <img
@@ -497,7 +545,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="gallery section-pad">
+            <section className="feature section-pad home-motion-reveal">
                 <div className="page-width">
                     <div className="section-heading">
                         <div>

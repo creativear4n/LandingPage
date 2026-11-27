@@ -1,4 +1,7 @@
-import { updatePageSeo } from "../utils/seo";
+import {
+    updatePageSeo,
+    updateProjectCollectionSchema,
+} from "../utils/seo";
 import { useEffect, useState } from "react";
 
 import {
@@ -448,6 +451,11 @@ export default function Projects({
 
     const [projects, setProjects] = useState<ProjectData[]>([]);
 
+    // Menandai kategori yang datanya sudah selesai dimuat.
+    // Ini mencegah schema kategori lama terbawa saat berpindah kategori.
+    const [loadedCategory, setLoadedCategory] =
+        useState<CategorySlug | null>(null);
+
     const [searchQuery, setSearchQuery] = useState("");
 
     const [product, setProduct] = useState<ApiProduct | null>(null);
@@ -468,6 +476,7 @@ export default function Projects({
                     ? `/projects/${category}`
                     : "/projects",
                 robots: "noindex,follow",
+                breadcrumbs: [],
             });
 
             return;
@@ -496,6 +505,7 @@ export default function Projects({
 
         async function loadProjects() {
             if (!isCategorySlug(category)) {
+                setLoadedCategory(null);
                 setLoading(false);
                 setProjectHeroImage(null);
                 setProduct(null);
@@ -507,6 +517,7 @@ export default function Projects({
             const config = projectCategories[category];
 
             try {
+                setLoadedCategory(null);
                 setLoading(true);
                 setError(null);
                 setProjectHeroImage(null);
@@ -558,17 +569,19 @@ export default function Projects({
                 setProduct(selectedProduct);
 
                 // Ambil project berdasarkan kategori layanan
-                setProjects(
-                    normalizeProjectsByCategory(
-                        projectsData,
-                        selectedProduct.id,
-                        category
-                    )
+                const normalizedProjects = normalizeProjectsByCategory(
+                    projectsData,
+                    selectedProduct.id,
+                    category
                 );
+
+                setProjects(normalizedProjects);
+                setLoadedCategory(category);
 
             } catch (reason) {
                 if (!active) return;
 
+                setLoadedCategory(null);
                 setProjectHeroImage(null);
 
                 setError(
@@ -590,6 +603,49 @@ export default function Projects({
             active = false;
         };
     }, [category]);
+
+    // Buat structured data CollectionPage setelah data kategori selesai dimuat.
+    useEffect(() => {
+        if (
+            !manageSeo ||
+            loading ||
+            error ||
+            !isCategorySlug(category) ||
+            loadedCategory !== category ||
+            projects.length === 0
+        ) {
+            updateProjectCollectionSchema(
+                undefined,
+                category
+                    ? `/projects/${category}`
+                    : "/projects"
+            );
+
+            return;
+        }
+
+        const config = projectSeo[category];
+
+        updateProjectCollectionSchema(
+            {
+                name: `${projectCategories[category].title} Projects`,
+                description: config.description,
+                items: projects.map((project) => ({
+                    name: project.title,
+                    path: `/projects/${category}/${project.id}`,
+                    image: project.thumbnail_url || undefined,
+                })),
+            },
+            `/projects/${category}`
+        );
+    }, [
+        category,
+        projects,
+        loadedCategory,
+        loading,
+        error,
+        manageSeo,
+    ]);
 
     const filteredProjects = projects.filter((project) => {
         const query = normalizeSearchText(searchQuery);

@@ -1,13 +1,14 @@
-
 import {
     BrowserRouter,
     Routes,
     Route,
     Navigate,
+    useLocation,
 } from "react-router-dom";
 
+import { updatePageSeo } from "./utils/seo";
 import MainLayout from "./components/layout/MainLayout";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IntroAnimation from "./components/IntroAnimation";
 
 import Home from "./pages/Home";
@@ -18,35 +19,62 @@ import Projects, {
     ProjectDetail,
 } from "./pages/Projects";
 
-function HomeWithIntro() {
-    const [showIntro, setShowIntro] = useState(true);
-
-    return (
-        <>
-            <Home />
-            {showIntro && (
-                <IntroAnimation onComplete={() => setShowIntro(false)} />
-            )}
-        </>
-    );
-}
 
 function NotFound() {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        updatePageSeo({
+            title: "404 | Halaman Tidak Ditemukan - AR4N Group",
+            description:
+                "Halaman yang Anda cari tidak ditemukan di website AR4N Group.",
+            path: pathname,
+            robots: "noindex,follow",
+            breadcrumbs: [],
+        });
+    }, [pathname]);
+
     return (
         <MainLayout page="about">
-            <main className="page-width section-pad">
+            <section className="page-width section-pad">
                 <h1>404</h1>
                 <p>Halaman tidak ditemukan.</p>
-            </main>
+            </section>
         </MainLayout>
     );
 }
 
-export default function App() {
+function AppContent() {
+    const [showIntro, setShowIntro] = useState(false);
+    const introChecked = useRef(false);
+
+    useEffect(() => {
+        // Mencegah pemeriksaan ganda React StrictMode
+        if (introChecked.current) return;
+        introChecked.current = true;
+
+        const introKey = "ar4n_intro_last_seen";
+
+        // Menggunakan tanggal lokal perangkat pengunjung
+        const now = new Date();
+        const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0"),
+        ].join("-");
+
+        const lastSeen = sessionStorage.getItem(introKey);
+
+        if (lastSeen !== today) {
+            setShowIntro(true);
+            sessionStorage.setItem(introKey, today);
+        }
+    }, []);
+
     return (
-        <BrowserRouter>
+        <>
             <Routes>
-                <Route path="/" element={<HomeWithIntro />} />
+                <Route path="/" element={<Home />} />
 
                 <Route path="/about" element={<About />} />
 
@@ -127,6 +155,21 @@ export default function App() {
 
                 <Route path="*" element={<NotFound />} />
             </Routes>
+
+            {/* Global Intro Animation */}
+            {showIntro && (
+                <IntroAnimation
+                    onComplete={() => setShowIntro(false)}
+                />
+            )}
+        </>
+    );
+}
+
+export default function App() {
+    return (
+        <BrowserRouter>
+            <AppContent />
         </BrowserRouter>
     );
 }

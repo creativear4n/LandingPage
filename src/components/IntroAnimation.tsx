@@ -1,15 +1,50 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import "./intro-animation.css";
 
 type IntroAnimationProps = {
     onComplete: () => void;
 };
 
-export default function IntroAnimation({ onComplete }: IntroAnimationProps) {
+export default function IntroAnimation({
+    onComplete,
+}: IntroAnimationProps) {
+    const onCompleteRef = useRef(onComplete);
+    const completedRef = useRef(false);
+
     useEffect(() => {
-        const timeout = window.setTimeout(onComplete, 7800);
-        return () => window.clearTimeout(timeout);
+        onCompleteRef.current = onComplete;
     }, [onComplete]);
+
+    useEffect(() => {
+        const completeOnce = () => {
+            if (completedRef.current) {
+                return;
+            }
+
+            completedRef.current = true;
+            onCompleteRef.current();
+        };
+
+        const reducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+        );
+
+        // Langsung selesaikan intro apabila pengguna
+        // mengaktifkan pengurangan animasi.
+        if (reducedMotion.matches) {
+            completeOnce();
+            return;
+        }
+
+        const timeout = window.setTimeout(
+            completeOnce,
+            7800
+        );
+
+        return () => {
+            window.clearTimeout(timeout);
+        };
+    }, []);
 
     return (
         <div
@@ -27,10 +62,23 @@ export default function IntroAnimation({ onComplete }: IntroAnimationProps) {
             </div>
 
             <div className="intro-composition">
-                <svg className="intro-outline" viewBox="0 0 620 470" aria-hidden="true">
-                    <path className="outline-path" d="M310 18 H594 V452 H26 V18 H310" />
-                    <path className="outline-corner" d="M26 74 V18 H82 M538 18 H594 V74 M594 396 V452 H538 M82 452 H26 V396" />
-                    <path className="outline-center" d="M310 0 V18 M310 452 V470 M8 235 H26 M594 235 H612" />
+                <svg
+                    className="intro-outline"
+                    viewBox="0 0 620 470"
+                    aria-hidden="true"
+                >
+                    <path
+                        className="outline-path"
+                        d="M310 18 H594 V452 H26 V18 H310"
+                    />
+                    <path
+                        className="outline-corner"
+                        d="M26 74 V18 H82 M538 18 H594 V74 M594 396 V452 H538 M82 452 H26 V396"
+                    />
+                    <path
+                        className="outline-center"
+                        d="M310 0 V18 M310 452 V470 M8 235 H26 M594 235 H612"
+                    />
                 </svg>
 
                 <div className="intro-logo-wrap">
@@ -38,11 +86,14 @@ export default function IntroAnimation({ onComplete }: IntroAnimationProps) {
                         className="intro-logo intro-logo-white"
                         src="/assets/arann-white.png"
                         alt=""
+                        decoding="async"
                     />
+
                     <img
                         className="intro-logo intro-logo-color"
                         src="/assets/arann.png"
                         alt="AR4N Group"
+                        decoding="async"
                     />
                 </div>
 

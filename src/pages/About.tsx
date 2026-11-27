@@ -559,6 +559,7 @@ export default function About() {
                     path: "/about",
                 },
             ],
+        pageType: "AboutPage",
         });
 
         let active = true;

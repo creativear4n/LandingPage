@@ -186,24 +186,60 @@ const productSeo: Record<
     {
         title: string;
         description: string;
+        serviceName: string;
+        serviceType: string[];
     }
 > = {
     design: {
         title: "Jasa Arsitek & Desain Interior Cirebon | AR4N Group",
         description:
             "AR4N Group menyediakan jasa arsitek dan desain interior di Cirebon untuk hunian dan bangunan komersial, mulai dari konsultasi, konsep desain, visualisasi 3D, hingga gambar kerja dan perencanaan RAB.",
+        
+
+        serviceName:
+            "Jasa Arsitektur dan Desain Interior AR4N Group",
+
+        serviceType: [
+            "Jasa arsitektur",
+            "Desain interior",
+            "Visualisasi 3D",
+            "Gambar kerja",
+            "Perencanaan RAB",
+        ],
     },
 
     buildings: {
         title: "Jasa Kontraktor Cirebon & Design Build | AR4N Group",
         description:
             "AR4N Group melayani jasa kontraktor di Cirebon untuk pembangunan dan renovasi rumah serta bangunan komersial, termasuk pekerjaan interior dan design & build.",
+        
+
+        serviceName:
+            "Jasa Konstruksi dan Design Build AR4N Group",
+
+        serviceType: [
+            "Konstruksi bangunan",
+            "Pembangunan rumah",
+            "Renovasi bangunan",
+            "Design & Build",
+            "Pekerjaan interior",
+            "Fit-out",
+            "Furniture custom",
+        ],
     },
 
     "pbg-slf": {
         title: "AR4N Group | Products | Jasa Pengurusan PBG & SLF Cirebon",
         description:
             "Pendampingan pengurusan Persetujuan Bangunan Gedung (PBG) dan Sertifikat Laik Fungsi (SLF), mulai dari penyiapan dokumen hingga pendampingan proses teknis di Cirebon.",
+
+        serviceName:
+            "Jasa Pendampingan Pengurusan PBG dan SLF AR4N Group",
+
+        serviceType: [
+            "Pendampingan pengurusan Persetujuan Bangunan Gedung (PBG)",
+            "Pendampingan pengurusan Sertifikat Laik Fungsi (SLF)",
+        ],
     },
 };
 
@@ -1819,6 +1855,15 @@ export default function Products() {
         const seo = productSeo[productSlug];
 
         if (!seo) {
+            updatePageSeo({
+                title: "404 | Products Tidak Ditemukan - AR4N Group",
+                description:
+                    "Kategori layanan yang Anda cari tidak ditemukan.",
+                path: window.location.pathname,
+                robots: "noindex,follow",
+                breadcrumbs: [],
+            });
+
             return;
         }
 
@@ -1842,6 +1887,12 @@ export default function Products() {
                     path: `/products/${productSlug}`,
                 },
             ],
+        service: {
+            name: seo.serviceName,
+            serviceType: seo.serviceType,
+            description: seo.description,
+            areaServed: "Cirebon, Jawa Barat, Indonesia",
+        },
         });
     }, [productSlug]);
     
@@ -1988,35 +2039,36 @@ export default function Products() {
     if (!config) {
         return (
             <MainLayout page="about">
-                <main className="page-width section-pad">
+                <div className="page-width section-pad">
                     <h1>Halaman Products tidak ditemukan.</h1>
-                </main>
+                </div>
             </MainLayout>
         );
     }
     if (loading) {
         return (
             <MainLayout page={config.page}>
-                <main className="products-loading">
+                <div className="products-loading">
                     <span className="products-loading-indicator" />
                     <p>Memuat data Products...</p>
-                </main>
+                </div>
             </MainLayout>
         );
     }
     if (error) {
         return (
             <MainLayout page={config.page}>
-                <main className="page-width section-pad products-error">
+                <div className="page-width section-pad products-error">
                     <h2>Konten belum dapat dimuat</h2>
                     <p>{error}</p>
                     <button
+                        type="button"
                         className="outline-button"
                         onClick={() => window.location.reload()}
                     >
                         Coba lagi
                     </button>
-                </main>
+                </div>
             </MainLayout>
         );
     }
@@ -2024,7 +2076,7 @@ export default function Products() {
     return (
         <>
         <MainLayout page={config.page} headerOverlay>
-            <main className="products-page">
+            <div className="products-page">
                 <section className="products-hero inner-hero">
                     {heroImage && (
                         <img
@@ -2210,7 +2262,7 @@ export default function Products() {
                         )}
                     </section>
                 </section>
-                </main>
+            </div>
             </MainLayout>
 
             {selectedOrderPackage && (

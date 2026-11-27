@@ -401,7 +401,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="feature section-pad home-motion-reveal">
+            <section className="work section-pad home-motion-reveal">
                 <div className="page-width">
                     <div className="section-heading">
                         <div>
@@ -545,7 +545,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="feature section-pad home-motion-reveal">
+            <section className="gallery section-pad home-motion-reveal">
                 <div className="page-width">
                     <div className="section-heading">
                         <div>
